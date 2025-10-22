@@ -1,18 +1,41 @@
 <template>
   <n-config-provider>
-    <div>
-      <HeaderBar/>
-      <div class="main">
-        <router-view/>
+    <transition name="fade">
+      <div v-show="!showPreloader" key="content">
+        <HeaderBar/>
+        <div class="main">
+          <router-view/>
+        </div>
       </div>
-    </div>
-    <BackgroundAnimation class="main__background"/>
+    </transition>
+
+    <transition name="fade">
+      <div v-show="showPreloader" key="preloader">
+        <Preloader :active="showPreloader" />
+      </div>
+    </transition>
+    <BackgroundAnimation class="main__background" :faster="showPreloader"/>
   </n-config-provider>
 </template>
 
 <script setup lang="ts">
 import HeaderBar from "@/components/template/HeaderBar.vue";
 import BackgroundAnimation from "@/components/template/BackgroundAnimation.vue";
+import Preloader from "@/components/template/Preloader.vue";
+
+import {ref, onMounted} from "vue";
+
+const showPreloader = ref<boolean>(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    showPreloader.value = true;
+  }, 3000)
+
+  setTimeout(() => {
+    showPreloader.value = false;
+  }, 8000)
+})
 </script>
 
 <style scoped lang="scss">
@@ -30,5 +53,14 @@ import BackgroundAnimation from "@/components/template/BackgroundAnimation.vue";
     top: 0;
     left: 0;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

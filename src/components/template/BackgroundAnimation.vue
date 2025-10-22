@@ -3,7 +3,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+
+interface Props {
+  faster?: boolean;
+}
+
+const props = defineProps<Props>();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 let ctx: CanvasRenderingContext2D | null = null;
@@ -15,6 +21,18 @@ let stars: {
   opacity: number;
 }[] = [];
 let animationId: number;
+
+// 🧭 Множители скорости
+let speedMultiplier = 1;
+let targetMultiplier = props.faster ? 50 : 1;
+
+// 🪄 Следим за изменением пропса
+watch(
+  () => props.faster,
+  (newVal) => {
+    targetMultiplier = newVal ? 50 : 1;
+  }
+);
 
 function initStars(width: number, height: number) {
   stars = Array.from({ length: 200 }, () => ({
@@ -29,10 +47,13 @@ function initStars(width: number, height: number) {
 function animate() {
   if (!ctx || !canvas.value) return;
 
+  // 🧮 Плавное приближение текущей скорости к целевой
+  speedMultiplier += (targetMultiplier - speedMultiplier) * 0.05;
+
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 
   for (const s of stars) {
-    s.x -= s.speed;
+    s.x -= s.speed * speedMultiplier;
     if (s.x < 0) s.x = canvas.value.width;
     s.opacity += (Math.random() - 0.5) * 0.03;
     s.opacity = Math.max(0.2, Math.min(1, s.opacity));

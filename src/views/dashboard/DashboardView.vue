@@ -7,7 +7,7 @@
           v-for="(item, index) in planets"
           :class="['dashboard__list-item', { 'dashboard__list-item_even': index % 2 === 1 }]"
         >
-          <Planet :title="item.title" size="300" type="star"/>
+          <Planet :title="item.title" :size="300" :color="item.color" type="star" :id="item.id"/>
         </div>
       </div>
     </div>
@@ -21,16 +21,19 @@ import Planet from "@/components/template/Planet.vue";
 import {ref, computed, watch} from "vue";
 
 interface Planet {
+  id: number;
   title: string;
   color: string;
 }
 
 const planets = ref<Array<Planet> | null>([
   {
+    id: 1,
     title: 'Места',
     color: '#cf99ff'
   },
   {
+    id: 2,
     title: 'Фильмы',
     color: '#6666ff'
   },
@@ -44,7 +47,7 @@ const planets = ref<Array<Planet> | null>([
   &__container{
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: 80px;
   }
 
   &__list{

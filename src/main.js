@@ -1,6 +1,6 @@
 import './assets/main.scss'
 import App from './App.vue'
-import router from './router/index.js'
+import router from './router/index.ts'
 import {createApp} from "vue";
 import Naive from 'naive-ui'
 
