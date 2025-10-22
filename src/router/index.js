@@ -18,6 +18,12 @@ const router = createRouter({
       component: () => import('@/views/dashboard/DashboardView.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/galaxy/:id',
+      name: 'Galaxy',
+      component: () => import('@/views/dashboard/GalaxyView.vue'),
+      meta: { requiresAuth: true }
+    },
     // FALLBACK
     {
       path: '/:pathMatch(.*)*',
