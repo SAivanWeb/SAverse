@@ -11,6 +11,7 @@
 <style lang="scss" scoped>
 .main-wrapper{
   width: 100%;
+  height: calc(100vh - 59px);
   padding: 60px 0;
 }
 </style>

@@ -27,15 +27,15 @@ import {ref, onMounted} from "vue";
 
 const showPreloader = ref<boolean>(false);
 
-onMounted(() => {
-  setTimeout(() => {
-    showPreloader.value = true;
-  }, 3000)
-
-  setTimeout(() => {
-    showPreloader.value = false;
-  }, 8000)
-})
+// onMounted(() => {
+//   setTimeout(() => {
+//     showPreloader.value = true;
+//   }, 3000)
+//
+//   setTimeout(() => {
+//     showPreloader.value = false;
+//   }, 8000)
+// })
 </script>
 
 <style scoped lang="scss">

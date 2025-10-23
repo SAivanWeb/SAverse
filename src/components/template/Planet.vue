@@ -1,5 +1,5 @@
 <template>
-  <div class="planet" @click="handleClick">
+  <div class="planet" @click="handleClick" :class="classes">
     <div class="planet__icon">
 
       <template v-if="type === 'planet'">
@@ -72,6 +72,7 @@
 <script setup lang="ts">
 import tinycolor from "tinycolor2";
 import {useRouter} from "vue-router";
+import {computed, ref} from "vue";
 
 const router = useRouter();
 const props = defineProps<{
@@ -79,7 +80,8 @@ const props = defineProps<{
   title: string,
   color?: string,
   size?: number,
-  type: string
+  type?: string,
+  text?: string,
 }>()
 
 const size = props.size
@@ -98,6 +100,14 @@ const handleClick = () => {
 
   }
 }
+
+const classes = computed(() => {
+  const classes = [];
+  if(props.text) {
+    classes.push(`planet_${props.text}`);
+  }
+  return classes;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -108,6 +118,29 @@ const handleClick = () => {
   cursor: pointer;
   width: fit-content;
   gap: 24px;
+
+  &_small{
+    gap: 12px;
+
+    &:hover{
+      & .planet__title{
+        color: #F5F5F5;
+      }
+    }
+    & .planet__title{
+      font-size: 18px;
+      color: rgba(245, 245, 245, 0.6);
+    }
+  }
+
+  &_text-hidden{
+    cursor: default;
+    pointer-events: none;
+    gap: 0;
+    & .planet__title{
+      display: none;
+    }
+  }
 
   &__title{
     font-size: 24px;

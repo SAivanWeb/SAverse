@@ -19,14 +19,9 @@ import MainWrapper from "@/components/template/MainWrapper.vue";
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import Planet from "@/components/template/Planet.vue";
 import {ref, computed, watch} from "vue";
+import {Planets} from "@/types/interfaces";
 
-interface Planet {
-  id: number;
-  title: string;
-  color: string;
-}
-
-const planets = ref<Array<Planet> | null>([
+const planets = ref<Array<Planets> | null>([
   {
     id: 1,
     title: 'Места',
