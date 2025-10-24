@@ -1,15 +1,33 @@
 <template>
-  <button class="button">
+  <button class="button" :class="classes" @click="emit('click')">
     {{title}}
   </button>
 </template>
 
 <script setup lang="ts">
+import {computed} from 'vue'
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
+
 interface Props {
   title: string
+  color?: string
+  size?: string
 }
 
 const props = defineProps<Props>();
+
+const classes = computed(() => {
+  const classes = [];
+  if (props.color) {
+    classes.push(`button_${props.color}`);
+  }
+  if (props.size) {
+    classes.push(`button_${props.size}`);
+  }
+  return classes;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -32,6 +50,20 @@ const props = defineProps<Props>();
     &:hover {
       box-shadow: none;
     }
+  }
+
+  &_black{
+    background-color: #0D1117;
+    color: #F5F5F5;
+
+    &:hover{
+      box-shadow: none;
+    }
+  }
+
+  &_large{
+    padding: 14px 24px;
+    width: 100%;
   }
 }
 </style>

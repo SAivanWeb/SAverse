@@ -2,7 +2,7 @@
   <n-config-provider>
     <transition name="fade">
       <div v-show="!showPreloader" key="content">
-        <HeaderBar/>
+        <HeaderBar @show-auth="showAuthModal = true"/>
         <div class="main">
           <router-view/>
         </div>
@@ -15,6 +15,8 @@
       </div>
     </transition>
     <BackgroundAnimation class="main__background" :faster="showPreloader"/>
+
+    <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
   </n-config-provider>
 </template>
 
@@ -24,8 +26,14 @@ import BackgroundAnimation from "@/components/template/BackgroundAnimation.vue";
 import Preloader from "@/components/template/Preloader.vue";
 
 import {ref, onMounted} from "vue";
+import AuthModal from "@/components/template/modals/AuthModal.vue";
 
 const showPreloader = ref<boolean>(false);
+const showAuthModal = ref<boolean>(false);
+
+const closeModal = () => {
+  showAuthModal.value = false;
+};
 
 // onMounted(() => {
 //   setTimeout(() => {

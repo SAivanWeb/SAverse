@@ -1,9 +1,9 @@
 <template>
   <div class="header">
     <div class="header__container">
-      <div class="header__logo"></div>
+      <h4 class="header__logo">SAverse</h4>
       <div class="header__menu">
-        <MainButton title="Вход"/>
+        <MainButton title="Вход" @click="emit('show-auth')"/>
       </div>
     </div>
   </div>
@@ -11,7 +11,9 @@
 
 <script lang="ts" setup>
 import MainButton from "@/components/ui/button/MainButton.vue";
-
+const emit = defineEmits<{
+  (e: 'show-auth'): void;
+}>()
 </script>
 
 <style lang="scss" scoped>
