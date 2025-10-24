@@ -120,7 +120,7 @@ const classes = computed(() => {
   gap: 24px;
 
   &_small{
-    gap: 12px;
+    gap: 0;
 
     &:hover{
       & .planet__title{

@@ -81,9 +81,5 @@ const system = ref<Array<Planets>>([
     margin-bottom: 80px;
   }
 
-  &__content{
-    width: 100%;
-    height: 100%;
-  }
 }
 </style>

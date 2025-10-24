@@ -12,6 +12,6 @@
 .main-wrapper{
   width: 100%;
   height: calc(100vh - 59px);
-  padding: 60px 0;
+  padding: 60px 0 0 0;
 }
 </style>
