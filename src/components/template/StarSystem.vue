@@ -6,28 +6,32 @@
           v-for="(item, index) in planets"
           :key="item.id + '-orbit'"
           class="system__orbit"
-          :style="{ '--radius': `${110 + index * 85}px` }"
+          :style="{ '--radius': `${150 + index * 110}px` }"
         ></div>
 
-
-        <Planet
+        <div
           v-for="(item, index) in planets"
-          :key="item.id"
-          class="system__planet"
-          :title="item.title"
-          :size="50"
-          :color="item.color"
-          :type="item.type"
-          :id="item.id"
-          text="small"
+          :key="item.id + '-wrapper'"
+          class="system__planet-wrapper"
           :style="{
             animationDuration: `${60}s`,
             animationDelay: randomDelays[index] + 's',
-            '--radius': `${110 + index * 85}px`
+            '--radius': `${150 + index * 110}px`
           }"
-        />
+        >
+          <Planet
+            class="system__planet"
+            :title="item.title"
+            :size="50"
+            :color="item.color"
+            :type="item.type"
+            :id="item.id"
+            text="small"
+          />
+        </div>
       </template>
 
+      <!-- Звезда -->
       <template v-if="star">
         <Planet
           class="system__star"
@@ -52,7 +56,6 @@ const props = defineProps<{ items: Planets[] }>();
 
 const star = computed(() => props.items.find(item => item.type === "star"));
 const planets = computed(() => props.items.filter(item => item.type === "planet"));
-
 const randomDelays = planets.value.map(() => -Math.random() * 30);
 </script>
 
@@ -75,7 +78,6 @@ const randomDelays = planets.value.map(() => -Math.random() * 30);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    pointer-events: auto;
     z-index: 10;
   }
 
@@ -83,7 +85,7 @@ const randomDelays = planets.value.map(() => -Math.random() * 30);
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scaleY(0.6);
     width: calc(var(--radius) * 2);
     height: calc(var(--radius) * 2);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -91,29 +93,32 @@ const randomDelays = planets.value.map(() => -Math.random() * 30);
     pointer-events: none;
   }
 
-  &__planet {
+  &__planet-wrapper {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg);
+    transform: translate(-50%, -50%) scaleY(0.6)
+    rotate(0deg) translateX(var(--radius)) rotate(0deg);
     animation: orbit linear infinite;
+    pointer-events: none;
+  }
+
+  &__planet {
+    transform: scaleY(calc(1 / 0.6));
     cursor: pointer;
     pointer-events: auto;
-    z-index: 20;
-
-    &:hover {
-      transform: rotate(0deg) translateX(var(--radius)) scale(1.1) rotate(0deg);
-      transition: transform 0.2s ease;
-    }
+    transition: transform 0.3s ease;
   }
 }
 
 @keyframes orbit {
   from {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg);
+    transform: translate(-50%, -50%) scaleY(0.6)
+    rotate(0deg) translateX(var(--radius)) rotate(0deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(360deg) translateX(var(--radius)) rotate(-360deg);
+    transform: translate(-50%, -50%) scaleY(0.6)
+    rotate(360deg) translateX(var(--radius)) rotate(-360deg);
   }
 }
 </style>
