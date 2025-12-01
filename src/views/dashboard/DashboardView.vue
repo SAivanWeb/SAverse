@@ -1,7 +1,10 @@
 <template>
   <MainWrapper>
     <div class="dashboard__container">
-      <MainTitle title="Ваши галактики"/>
+      <div class="dashboard__header">
+        <MainTitle title="Ваши галактики"/>
+        <MainButton title="Создать" @click="emit('show-galaxy')"/>
+      </div>
       <div class="dashboard__list">
         <div
           v-for="(item, index) in planets"
@@ -20,7 +23,11 @@ import MainTitle from "@/components/ui/title/MainTitle.vue";
 import Planet from "@/components/template/Planet.vue";
 import {ref, computed, watch} from "vue";
 import {Planets} from "@/types/interfaces";
+import MainButton from "@/components/ui/button/MainButton.vue";
 
+const emit = defineEmits<{
+  (e: 'show-galaxy'): void;
+}>()
 const planets = ref<Array<Planets> | null>([
   {
     id: 1,
@@ -43,6 +50,12 @@ const planets = ref<Array<Planets> | null>([
     display: flex;
     flex-direction: column;
     gap: 80px;
+  }
+  
+  &__header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &__list{

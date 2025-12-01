@@ -4,3 +4,13 @@ export interface Planets {
     color: string;
     type?: string;
 }
+
+export interface AuthData {
+  email: string;
+  password: string;
+}
+
+export interface GalaxyData {
+  name: string;
+  color: string;
+}

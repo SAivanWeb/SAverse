@@ -2,6 +2,7 @@
   <MainWrapper>
     <div class="galaxy__header">
       <MainTitle title="Система" />
+      <MainButton title="Создать" @click="emit('show-planet')"/>
     </div>
 
     <div class="galaxy__content">
@@ -17,8 +18,11 @@ import { ref, onMounted } from "vue";
 import {useRoute} from "vue-router";
 import StarSystem from "@/components/template/StarSystem.vue";
 import {Planets} from "@/types/interfaces";
+import MainButton from "@/components/ui/button/MainButton.vue";
 
-
+const emit = defineEmits<{
+  (e: 'show-planet'): void;
+}>()
 // const route = useRoute();
 //
 // const galaxyId = ref<string | null>(null);
@@ -79,6 +83,9 @@ const system = ref<Array<Planets>>([
 .galaxy{
   &__header{
     margin-bottom: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
 }

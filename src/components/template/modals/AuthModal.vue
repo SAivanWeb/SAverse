@@ -34,13 +34,14 @@ import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import {ref, computed, watch} from "vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
+import {AuthData} from "@/types/interfaces";
 
 const emit = defineEmits<{
   (e: 'hide-modal'): void
 }>()
 
 const authType = ref<string>('reg');
-const authData = ref<object>({
+const authData = ref<AuthData>({
   email: "",
   password: "",
 })

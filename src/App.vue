@@ -4,7 +4,7 @@
       <div v-show="!showPreloader" key="content">
         <HeaderBar @show-auth="showAuthModal = true"/>
         <div class="main">
-          <router-view/>
+          <router-view @show-galaxy="showGalaxyModal = true" @show-planet="showPlanetModal = true"/>
         </div>
       </div>
     </transition>
@@ -17,6 +17,8 @@
     <BackgroundAnimation class="main__background" :faster="showPreloader"/>
 
     <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
+    <GalaxyModal v-if="showGalaxyModal" @hide-modal="closeModal"/>
+    <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
   </n-config-provider>
 </template>
 
@@ -27,12 +29,18 @@ import Preloader from "@/components/template/Preloader.vue";
 
 import {ref, onMounted} from "vue";
 import AuthModal from "@/components/template/modals/AuthModal.vue";
+import GalaxyModal from "@/components/template/modals/GalaxyModal.vue";
+import PlanetModal from "@/components/template/modals/PlanetModal.vue";
 
 const showPreloader = ref<boolean>(false);
 const showAuthModal = ref<boolean>(false);
+const showGalaxyModal = ref<boolean>(false);
+const showPlanetModal = ref<boolean>(false);
 
 const closeModal = () => {
   showAuthModal.value = false;
+  showGalaxyModal.value = false;
+  showPlanetModal.value = false;
 };
 
 // onMounted(() => {
