@@ -20,7 +20,10 @@ const emit = defineEmits<{
 .header {
   padding: 12px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  
   &__container {
     display: flex;
     align-items: center;

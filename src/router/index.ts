@@ -24,6 +24,12 @@ const router = createRouter({
       component: () => import('@/views/dashboard/GalaxyView.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/planet/:id',
+      name: 'Planet',
+      component: () => import('@/views/dashboard/NoteView.vue'),
+      meta: { requiresAuth: true }
+    },
     // FALLBACK
     {
       path: '/:pathMatch(.*)*',
