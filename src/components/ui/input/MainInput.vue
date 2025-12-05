@@ -7,6 +7,8 @@
       :name="name"
       :placeholder="placeholder"
       :type="type"
+      :value="modelValue"
+      @input="onInput"
     >
   </div>
 </template>
@@ -18,10 +20,19 @@ interface Props {
   name: string;
   placeholder: string;
   type: string;
-
+  modelValue?: string;
 }
 
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+
+const onInput = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  emit('update:modelValue', target.value);
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,9 +1,11 @@
+import user from './modules/user';
 
-
-class Api {
-  constructor() {
-
-  }
+export class ApiModules {
+  user = user;
 }
 
-export default new Api();
+const apiModules = new ApiModules();
+
+export type ApiInstance = ApiModules;
+
+export default apiModules;

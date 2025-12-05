@@ -3,7 +3,8 @@
     <div class="header__container">
       <h4 class="header__logo">SAverse</h4>
       <div class="header__menu">
-        <MainButton title="Вход" @click="emit('show-auth')"/>
+        <MainButton v-if="!isAuth" title="Вход" @click="emit('show-auth')"/>
+        <MainButton v-else title="Выход" @click="logout"/>
       </div>
     </div>
   </div>
@@ -11,9 +12,21 @@
 
 <script lang="ts" setup>
 import MainButton from "@/components/ui/button/MainButton.vue";
+import {computed, watch} from "vue";
+import {useUserStore} from "@/store/useUserStore";
+
+const store = useUserStore();
 const emit = defineEmits<{
   (e: 'show-auth'): void;
 }>()
+
+const isAuth = computed(() => {
+  return store.isAuth;
+})
+
+const logout = () => {
+  store.logout();
+}
 </script>
 
 <style lang="scss" scoped>

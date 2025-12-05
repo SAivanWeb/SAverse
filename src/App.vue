@@ -6,6 +6,10 @@
         <div class="main">
           <router-view @show-galaxy="showGalaxyModal = true" @show-planet="showPlanetModal = true"/>
         </div>
+
+        <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
+        <GalaxyModal v-if="showGalaxyModal" @hide-modal="closeModal"/>
+        <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
       </div>
     </transition>
 
@@ -16,9 +20,6 @@
     </transition>
     <BackgroundAnimation class="main__background" :faster="showPreloader"/>
 
-    <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
-    <GalaxyModal v-if="showGalaxyModal" @hide-modal="closeModal"/>
-    <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
   </n-config-provider>
 </template>
 
@@ -26,11 +27,15 @@
 import HeaderBar from "@/components/template/HeaderBar.vue";
 import BackgroundAnimation from "@/components/template/BackgroundAnimation.vue";
 import Preloader from "@/components/template/Preloader.vue";
-
-import {ref, onMounted} from "vue";
+import {ref, onMounted, watch} from "vue";
 import AuthModal from "@/components/template/modals/AuthModal.vue";
 import GalaxyModal from "@/components/template/modals/GalaxyModal.vue";
 import PlanetModal from "@/components/template/modals/PlanetModal.vue";
+import {useUserStore} from "@/store/useUserStore";
+import { storeToRefs } from 'pinia';
+
+const userStore = useUserStore();
+const { loading } = storeToRefs(userStore);
 
 const showPreloader = ref<boolean>(false);
 const showAuthModal = ref<boolean>(false);
@@ -43,15 +48,16 @@ const closeModal = () => {
   showPlanetModal.value = false;
 };
 
-// onMounted(() => {
-//   setTimeout(() => {
-//     showPreloader.value = true;
-//   }, 3000)
-//
-//   setTimeout(() => {
-//     showPreloader.value = false;
-//   }, 8000)
-// })
+watch(loading, (newVal) => {
+  if (newVal) {
+    showPreloader.value = true;
+  } else {
+    setTimeout(() => {
+      showPreloader.value = false;
+    }, 3000);
+  }
+});
+
 </script>
 
 <style scoped lang="scss">

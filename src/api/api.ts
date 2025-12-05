@@ -1,29 +1,43 @@
-import axios from 'axios';
-import store from '@/store';
+import axios, {
+  AxiosInstance,
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosResponse
+} from 'axios';
 import router from '@/router';
+import type { AuthResponse } from '@/api/modules/types/user';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+const api: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
-  },
+  }
 });
 
 // Request interceptor
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('access_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(
+  (config: RetryableRequestConfig) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      // убедимся, что headers существует
+      config.headers = config.headers ?? {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error: AxiosError) => {
+    return Promise.reject(error);
   }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+);
 
 api.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -31,36 +45,42 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refresh_token');
 
       if (!refreshToken) {
-        store.dispatch('user/logout');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         router.push('/auth');
         return Promise.reject(error);
       }
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+        const response = await axios.post<AuthResponse>(
+          `${import.meta.env.VITE_APP_BASE_URL}/auth/refresh`,
           { refresh_token: refreshToken }
         );
 
-        if (response.data?.data?.access_token && response.data?.data?.refresh_token) {
-          localStorage.setItem('access_token', response.data.data.access_token);
-          localStorage.setItem('refresh_token', response.data.data.refresh_token);
+        const tokens = response.data?.data;
 
-          originalRequest.headers.Authorization = `Bearer ${response.data.data.access_token}`;
+        if (tokens?.access_token && tokens?.refresh_token) {
+          localStorage.setItem('access_token', tokens.access_token);
+          localStorage.setItem('refresh_token', tokens.refresh_token);
+
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.Authorization = `Bearer ${tokens.access_token}`;
 
           return api(originalRequest);
         } else {
           throw new Error('Invalid refresh response');
         }
       } catch (refreshError) {
-        store.dispatch('user/logout');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         router.push('/auth');
         return Promise.reject(refreshError);
       }
     }
 
     if (error.response?.status === 401 && originalRequest._retry) {
-      store.dispatch('user/logout');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       router.push('/auth');
     }
 
