@@ -27,15 +27,16 @@
 import HeaderBar from "@/components/template/HeaderBar.vue";
 import BackgroundAnimation from "@/components/template/BackgroundAnimation.vue";
 import Preloader from "@/components/template/Preloader.vue";
-import {ref, onMounted, watch} from "vue";
 import AuthModal from "@/components/template/modals/AuthModal.vue";
 import GalaxyModal from "@/components/template/modals/GalaxyModal.vue";
 import PlanetModal from "@/components/template/modals/PlanetModal.vue";
-import {useUserStore} from "@/store/useUserStore";
-import { storeToRefs } from 'pinia';
 
-const userStore = useUserStore();
-const { loading } = storeToRefs(userStore);
+import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { useLoadingStore } from "@/store/useLoadingStore";
+
+const loadingStore = useLoadingStore();
+const { loading } = storeToRefs(loadingStore);
 
 const showPreloader = ref<boolean>(false);
 const showAuthModal = ref<boolean>(false);
@@ -54,10 +55,9 @@ watch(loading, (newVal) => {
   } else {
     setTimeout(() => {
       showPreloader.value = false;
-    }, 3000);
+    }, 1500);
   }
 });
-
 </script>
 
 <style scoped lang="scss">

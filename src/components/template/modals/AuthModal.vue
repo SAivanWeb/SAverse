@@ -57,7 +57,7 @@ async function login() {
     emit('hide-modal')
     setTimeout(() => {
       router.push({ path: '/dashboard' })
-    }, 2000)
+    }, 1000)
   }
 }
 
@@ -67,7 +67,7 @@ async function register() {
     emit('hide-modal')
     setTimeout(() => {
       router.push({ path: '/dashboard' })
-    }, 2000)
+    }, 1000)
   }
 }
 

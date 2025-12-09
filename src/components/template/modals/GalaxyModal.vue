@@ -11,7 +11,7 @@
         <ColorPicker v-model:modelValue="galaxyData.color" label="Цвет галактики"/>
       </div>
       <div class="modal__button-group">
-        <MainButton title="Создать" color="black" size="large"/>
+        <MainButton title="Создать" color="black" size="large" @click="createGalaxy()"/>
       </div>
     </template>
   </ModalWrapper>
@@ -21,18 +21,34 @@
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import {GalaxyData} from "@/types/interfaces";
 import ColorPicker from "@/components/ui/picker/ColorPicker.vue";
+import { apiKey } from '@/plugins/api';
+import type {ApiInstance} from "@/api";
+import {useLoadingStore} from "@/store/useLoadingStore";
+const api = inject<ApiInstance>(apiKey)!;
 
 const emit = defineEmits<{
   (e: 'hide-modal'): void
 }>()
 
+const loadingStore = useLoadingStore();
+
 const galaxyData = ref<GalaxyData>({
   name: "",
-  color: ""
+  color: "#000000"
 })
+
+async function createGalaxy() {
+  loadingStore.startLoading();
+  const res = await api.galaxy.createGalaxy(galaxyData.value);
+  if (res.success) {
+    emit('hide-modal');
+    
+    loadingStore.stopLoading();
+  }
+}
 </script>
 
 <style scoped lang="scss">

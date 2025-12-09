@@ -31,7 +31,7 @@ const emit = defineEmits<{
 
 const galaxyData = ref<GalaxyData>({
   name: "",
-  color: ""
+  color: "#000000"
 })
 </script>
 

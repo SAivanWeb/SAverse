@@ -30,12 +30,24 @@ const router = createRouter({
       component: () => import('@/views/dashboard/NoteView.vue'),
       meta: { requiresAuth: true }
     },
+
     // FALLBACK
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const hasToken = !!localStorage.getItem('access_token')
+  if (to.meta.requiresAuth && !hasToken) {
+    return next({ name: 'Home' })
+  }
+  if (to.meta.requiresGuest && hasToken) {
+    return next({ name: 'Dashboard' })
+  }
+  return next()
 })
 
 export default router

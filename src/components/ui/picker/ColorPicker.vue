@@ -1,10 +1,10 @@
 <template>
   <div class="picker">
-    <label v-if="label" :for="name" class="picker__label">{{ label }}</label>
+    <label v-if="label" class="picker__label">{{ label }}</label>
 
     <n-color-picker
       :value="modelValue"
-      :modes="['hexa']"
+      :modes="['hex']"
       @update:value="handleUpdate"
     />
   </div>
@@ -22,7 +22,9 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: string): void
 }>()
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: '#000000'
+})
 
 const handleUpdate = (color: string) => {
   emit("update:modelValue", color)
