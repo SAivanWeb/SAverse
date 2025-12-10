@@ -21,7 +21,7 @@ const emit = defineEmits<{
 }>()
 
 const isAuth = computed(() => {
-  return store.isAuth;
+  return store.currentUser;
 })
 
 const logout = () => {

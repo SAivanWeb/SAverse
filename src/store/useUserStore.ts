@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
 import { inject, ref } from 'vue';
-import type { AuthResponse, AuthData } from '@/api/modules/types/user';
+import type {AuthResponse, AuthData, currentUserResponse} from '@/api/modules/types/user';
 import { apiKey } from '@/plugins/api';
 import type { ApiInstance } from '@/api';
 import { useLoadingStore } from '@/store/useLoadingStore';
@@ -16,8 +16,8 @@ export const useUserStore = defineStore('useUserStore', () => {
 
   const loadingStore = useLoadingStore();
 
-  const isAuth = ref<boolean>(false);
   const errorMessage = ref<string | null>(null);
+  const currentUser = ref<string>('');
 
   async function register(payload: AuthData) {
     loadingStore.startLoading();
@@ -27,7 +27,6 @@ export const useUserStore = defineStore('useUserStore', () => {
       const response: AuthResponse = await api.user.register(payload);
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('refresh_token', response.data.refresh_token);
-      isAuth.value = true;
       return true;
     } catch (error) {
       errorMessage.value =
@@ -46,7 +45,6 @@ export const useUserStore = defineStore('useUserStore', () => {
       const response: AuthResponse = await api.user.login(payload);
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('refresh_token', response.data.refresh_token);
-      isAuth.value = true;
       return true;
     } catch (error) {
       errorMessage.value =
@@ -60,15 +58,32 @@ export const useUserStore = defineStore('useUserStore', () => {
   function logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    isAuth.value = false;
     router.push('/');
   }
 
+  async function initUser() {
+    loadingStore.startLoading();
+    errorMessage.value = null;
+
+    try {
+      const response: currentUserResponse = await api.user.currentUser();
+      currentUser.value = response.data.email;
+      return true;
+    } catch (error) {
+      errorMessage.value =
+        typeof error === 'string' ? error : 'Ошибка получения пользователя';
+      throw error;
+    } finally {
+      loadingStore.stopLoading();
+    }
+  }
+
   return {
-    isAuth,
+    currentUser,
     errorMessage,
     register,
     login,
-    logout
+    logout,
+    initUser
   };
 });

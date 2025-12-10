@@ -4,11 +4,16 @@
       <div v-show="!showPreloader" key="content">
         <HeaderBar @show-auth="showAuthModal = true"/>
         <div class="main">
-          <router-view @show-galaxy="showGalaxyModal = true" @show-planet="showPlanetModal = true"/>
+          <router-view  @show-galaxy="openGalaxyModal" @show-planet="showPlanetModal = true"/>
         </div>
 
         <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
-        <GalaxyModal v-if="showGalaxyModal" @hide-modal="closeModal"/>
+        <GalaxyModal
+          v-if="showGalaxyModal"
+          :edit="galaxyEditMode"
+          :galaxy="selectedGalaxy || undefined"
+          @hide-modal="closeModal"
+        />
         <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
       </div>
     </transition>
@@ -34,6 +39,7 @@ import PlanetModal from "@/components/template/modals/PlanetModal.vue";
 import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useLoadingStore } from "@/store/useLoadingStore";
+import {Galaxy} from "@/api/modules/types/galaxy";
 
 const loadingStore = useLoadingStore();
 const { loading } = storeToRefs(loadingStore);
@@ -42,11 +48,26 @@ const showPreloader = ref<boolean>(false);
 const showAuthModal = ref<boolean>(false);
 const showGalaxyModal = ref<boolean>(false);
 const showPlanetModal = ref<boolean>(false);
+const galaxyEditMode = ref<boolean>(false);
+const selectedGalaxy = ref<Galaxy | null>(null);
 
 const closeModal = () => {
   showAuthModal.value = false;
   showGalaxyModal.value = false;
   showPlanetModal.value = false;
+  galaxyEditMode.value = false;
+  selectedGalaxy.value = null;
+};
+
+const openGalaxyModal = (galaxy?: Galaxy) => {
+  if (galaxy) {
+    selectedGalaxy.value = galaxy;
+    galaxyEditMode.value = true;
+  } else {
+    selectedGalaxy.value = null;
+    galaxyEditMode.value = false;
+  }
+  showGalaxyModal.value = true;
 };
 
 watch(loading, (newVal) => {

@@ -48,15 +48,30 @@
 </template>
 
 <script setup lang="ts">
-import type { Planets } from "@/types/interfaces";
 import Planet from "@/components/template/Planet.vue";
 import { computed } from "vue";
+import {GalaxyResponseData} from "@/api/modules/types/galaxy";
 
-const props = defineProps<{ items: Planets[] }>();
+const props = defineProps<{ item: GalaxyResponseData }>();
 
-const star = computed(() => props.items.find(item => item.type === "star"));
-const planets = computed(() => props.items.filter(item => item.type === "planet"));
-const randomDelays = planets.value.map(() => -Math.random() * 30);
+const star = computed(() => ({
+  id: props.item.id,
+  title: props.item.name,
+  color: props.item.color,
+  type: 'star' as const
+}));
+
+const planets = computed(() =>
+  props.item.planets?.map(p => ({
+    id: p.id,
+    title: p.name,
+    color: p.color,
+    type: 'planet' as const
+  }))
+);
+const randomDelays = computed(() =>
+  planets.value.map(() => -Math.random() * 30)
+);
 </script>
 
 <style lang="scss" scoped>

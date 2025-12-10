@@ -12,6 +12,6 @@ const props = defineProps<Props>();
 
 <style scoped lang="scss">
 .page-title{
-  font-size: 32px;
+  font-size: 2rem;
 }
 </style>

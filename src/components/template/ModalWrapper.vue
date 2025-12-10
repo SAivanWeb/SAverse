@@ -62,8 +62,8 @@ const emit = defineEmits<{
     height: 70%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding: 0 12px;
+    gap: 1rem;
+    padding: 0 0.5rem;
   }
 
   &__header{
@@ -77,7 +77,7 @@ const emit = defineEmits<{
   }
 
   &__title{
-    font-size: 28px;
+    font-size: 1.8rem;
     color: #0D1117;
   }
 
@@ -88,12 +88,15 @@ const emit = defineEmits<{
   }
 
   &__button-group{
+    display:  flex;
+    flex-direction: column;
+    gap: 0.6rem;
     width: 100%;
-    margin-top: 24px;
+    margin-top: 1.5rem;
   }
 
   &__additional{
-    margin-top: 24px;
+    margin-top: 1rem;
     & p{
       width: fit-content;
       margin-left: auto;

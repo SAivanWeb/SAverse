@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosResponse } from 'axios';
 import api from '../api';
-import type { AuthResponse, AuthData } from '@/api/modules/types/user';
+import {AuthResponse, AuthData, currentUserResponse} from '@/api/modules/types/user';
 
 type ErrorResponse = {
   success: boolean;
@@ -27,6 +27,16 @@ export default {
         '/auth/login',
         payload
       );
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      throw error.response?.data?.error ?? error.message;
+    }
+  },
+
+  async currentUser(): Promise<currentUserResponse> {
+    try {
+      const { data }: AxiosResponse<currentUserResponse> = await api.get('/auth/me',);
       return data;
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;

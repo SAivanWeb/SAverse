@@ -1,8 +1,11 @@
 <template>
   <ModalWrapper @hide-modal="emit('hide-modal')">
     <template #header>
-      <h3 class="modal__title">
+      <h3 v-if="!edit" class="modal__title">
         Создать галактику
+      </h3>
+      <h3 v-else class="modal__title">
+        Редактировать галактику
       </h3>
     </template>
     <template #body>
@@ -11,7 +14,9 @@
         <ColorPicker v-model:modelValue="galaxyData.color" label="Цвет галактики"/>
       </div>
       <div class="modal__button-group">
-        <MainButton title="Создать" color="black" size="large" @click="createGalaxy()"/>
+        <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy"/>
+        <MainButton v-if="edit" title="Удалить" color="black" size="large" @click="deleteGalaxy"/>
+        <MainButton v-if="edit" title="Сохранить" color="black" size="large" @click="updateGalaxy"/>
       </div>
     </template>
   </ModalWrapper>
@@ -21,31 +26,94 @@
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
-import {inject, ref} from "vue";
-import {GalaxyData} from "@/types/interfaces";
+import {inject, ref, watch} from "vue";
 import ColorPicker from "@/components/ui/picker/ColorPicker.vue";
 import { apiKey } from '@/plugins/api';
 import type {ApiInstance} from "@/api";
 import {useLoadingStore} from "@/store/useLoadingStore";
-const api = inject<ApiInstance>(apiKey)!;
+import {useGalaxyStore} from "@/store/useGalaxyStore";
+import {CreateGalaxyPayload, Galaxy} from "@/api/modules/types/galaxy";
+import {useRouter} from "vue-router";
 
 const emit = defineEmits<{
   (e: 'hide-modal'): void
 }>()
 
+interface GalaxyModal {
+  edit?: boolean;
+  galaxy?: Galaxy
+}
+
+const props = withDefaults(defineProps<GalaxyModal>(), {
+  edit: false
+})
+
+const router = useRouter();
+const api = inject<ApiInstance>(apiKey)!;
+const galaxyStore = useGalaxyStore();
 const loadingStore = useLoadingStore();
 
-const galaxyData = ref<GalaxyData>({
+const galaxyData = ref<CreateGalaxyPayload>({
   name: "",
   color: "#000000"
 })
+
+watch(
+  () => props.galaxy,
+  (val) => {
+    if (val && props.edit) {
+      galaxyData.value = {
+        name: val.name,
+        color: val.color
+      };
+    } else if (!props.edit) {
+      galaxyData.value = {
+        name: "",
+        color: "#000000"
+      };
+    }
+  },
+  { immediate: true }
+);
 
 async function createGalaxy() {
   loadingStore.startLoading();
   const res = await api.galaxy.createGalaxy(galaxyData.value);
   if (res.success) {
     emit('hide-modal');
-    
+    setTimeout(() => {
+      galaxyStore.fetchGalaxies();
+    }, 1000)
+    loadingStore.stopLoading();
+  }
+}
+
+async function updateGalaxy() {
+  if (!props.galaxy) return;
+  try {
+    loadingStore.startLoading();
+    const res = await api.galaxy.updateGalaxy(props.galaxy.id, galaxyData.value);
+    if (res.success) {
+      await galaxyStore.fetchGalaxy(props.galaxy.id);
+      emit("hide-modal");
+    }
+  } finally {
+    loadingStore.stopLoading();
+  }
+}
+
+async function deleteGalaxy() {
+  if (!props.galaxy) return;
+  try {
+    loadingStore.startLoading();
+    const res = await api.galaxy.deleteGalaxy(props.galaxy.id);
+    if (res.success) {
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000)
+      emit("hide-modal");
+    }
+  } finally {
     loadingStore.stopLoading();
   }
 }

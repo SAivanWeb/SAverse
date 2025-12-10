@@ -10,3 +10,10 @@ export interface AuthData {
   email: string;
   password: string;
 }
+
+export interface currentUserResponse {
+  success: boolean;
+  data: {
+    email: string;
+  };
+}
