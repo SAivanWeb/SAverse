@@ -27,7 +27,7 @@ import {apiKey} from "@/plugins/api";
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import {Planet, UpdatePlanetPayload} from "@/api/modules/types/galaxy";
 
-const api = inject<ApiInstance>(apiKey)!;
+const api = inject<ApiInstance>(apiKey);
 const loadingStore = useLoadingStore();
 const route = useRoute();
 const router = useRouter();
@@ -113,8 +113,8 @@ onMounted(() => {
   border-radius: 20px 20px 0 0;
 }
 .ql-container.ql-snow{
-  max-height: calc(100vh - 8rem - 90px - (2rem * 1.2));
-  height: calc(100vh - 8rem - 90px - (2rem * 1.2));
+  max-height: calc(100vh - 8rem - 100px - (2rem * 1.2));
+  height: calc(100vh - 8rem - 100px - (2rem * 1.2));
   overflow-y: auto;
   scrollbar-color: #fff transparent;
   scrollbar-width: thin;

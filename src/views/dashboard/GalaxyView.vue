@@ -3,7 +3,7 @@
     <div v-if="system" class="galaxy__header">
       <MainTitle :title="system.name" />
       <div class="galaxy__header-btns">
-        <MainButton v-if="system?.planets.length < 6" title="Создать" @click="emit('show-planet')"/>
+        <MainButton v-if="system.planets.length < 5" title="Создать" @click="emit('show-planet')"/>
         <MainButton title="Редактировать" @click="editGalaxy"/>
       </div>
     </div>
@@ -77,6 +77,10 @@ onMounted(() => {
       gap: 2rem;
     }
   }
-
+  
+  &__content{
+    max-width: 100vw;
+    overflow: scroll;
+  }
 }
 </style>

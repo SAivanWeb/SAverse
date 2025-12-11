@@ -4,7 +4,7 @@
       <div v-show="!showPreloader" key="content">
         <HeaderBar @show-auth="showAuthModal = true"/>
         <div class="main">
-          <router-view  @show-galaxy="openGalaxyModal" @show-planet="showPlanetModal = true"/>
+          <router-view  @show-galaxy="openGalaxyModal" @show-planet="showPlanetModal = true" @show-auth="showAuthModal = true"/>
         </div>
 
         <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>

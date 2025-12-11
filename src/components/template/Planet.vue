@@ -162,7 +162,7 @@ const classes = computed(() => {
   }
 
   &__title{
-    font-size: 24px;
+    font-size: clamp(0.8rem, 4vw, 1.4rem);
     color: #F5F5F5;
     transition: 0.3s;
     max-width: 150px;

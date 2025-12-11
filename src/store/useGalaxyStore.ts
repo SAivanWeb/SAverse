@@ -41,11 +41,7 @@ export const useGalaxyStore = defineStore('useGalaxyStore', () => {
       loadingStore.stopLoading();
     }
   }
-
-
-
-
-
+  
   return {
     galaxies,
     galaxy,

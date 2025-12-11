@@ -2,7 +2,7 @@
   <MainWrapper>
     <div class="dashboard__container">
       <div class="dashboard__header">
-        <MainTitle title="Ваши галактики"/>
+        <MainTitle title="Галактики"/>
         <MainButton title="Создать" @click="emit('show-galaxy')"/>
       </div>
       <div class="dashboard__list">
@@ -10,7 +10,7 @@
           v-for="(item, index) in galaxies"
           :class="['dashboard__list-item', { 'dashboard__list-item_even': index % 2 === 1 }]"
         >
-          <Planet :title="item.name" :size="300" :color="item.color" type="star" :id="item.id"/>
+          <Planet :title="item.name" :size="starSize" :color="item.color" type="star" :id="item.id"/>
         </div>
       </div>
     </div>
@@ -39,6 +39,10 @@ async function fetchGalaxies() {
   await store.fetchGalaxies();
 }
 
+const starSize = computed(() => {
+  return window.innerWidth > 900 ? 300 : 150
+})
+
 onMounted(() => {
   fetchGalaxies();
 })
@@ -49,7 +53,7 @@ onMounted(() => {
   &__container{
     display: flex;
     flex-direction: column;
-    gap: 80px;
+    gap: 5rem;
   }
   
   &__header{
@@ -62,7 +66,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    gap: 48px;
+    gap: 3rem;
 
     &-item{
       width: 50%;
