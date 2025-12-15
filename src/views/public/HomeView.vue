@@ -121,7 +121,7 @@ const onPrimaryClick = () => {
   color: #ffffff;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 20px 3rem;
+  padding: 0 0 3rem;
   display: flex;
   flex-direction: column;
   gap: 5rem;

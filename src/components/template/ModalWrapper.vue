@@ -64,6 +64,9 @@ const emit = defineEmits<{
     flex-direction: column;
     gap: 1rem;
     padding: 0 0.5rem;
+    @media (max-width: 500px) {
+      width: 60%;
+    }
   }
 
   &__header{

@@ -1,52 +1,38 @@
 import { defineStore } from 'pinia'
-import {inject, ref} from 'vue'
-import {Galaxy, GalaxyListResponse, type GalaxyResponse, GalaxyResponseData} from "@/api/modules/types/galaxy";
-import { apiKey } from '@/plugins/api';
-import type { ApiInstance } from '@/api';
-import { useLoadingStore } from '@/store/useLoadingStore';
+import { ref } from 'vue'
+import api from '@/api'
+import type { ApiInstance } from '@/api'
+import type { Galaxy, GalaxyListResponse, GalaxyResponse, GalaxyResponseData } from '@/api/modules/types/galaxy'
+import { useLoadingStore } from '@/store/useLoadingStore'
 
 export const useGalaxyStore = defineStore('useGalaxyStore', () => {
-  const galaxies = ref<Galaxy[] | null>();
-  const galaxy = ref<GalaxyResponseData | null>();
+  const galaxies = ref<Galaxy[] | null>(null)
+  const galaxy = ref<GalaxyResponseData | null>(null)
 
-  const api = inject<ApiInstance>(apiKey)!;
-  if (!api) {
-    throw new Error('Api plugin is not provided');
-  }
-
-  const loadingStore = useLoadingStore();
+  const apiInstance: ApiInstance = api
+  const loadingStore = useLoadingStore()
 
   async function fetchGalaxies() {
-    loadingStore.startLoading();
+    loadingStore.startLoading()
     try {
-      const response: GalaxyListResponse = await api.galaxy.fetchGalaxies();
+      const response: GalaxyListResponse = await apiInstance.galaxy.fetchGalaxies()
       galaxies.value = response.data
-      return true;
-    } catch (error) {
-      throw error;
+      return true
     } finally {
-      loadingStore.stopLoading();
+      loadingStore.stopLoading()
     }
   }
 
   async function fetchGalaxy(id: number) {
-    loadingStore.startLoading();
+    loadingStore.startLoading()
     try {
-      const response: GalaxyResponse = await api.galaxy.fetchGalaxyById(id);
+      const response: GalaxyResponse = await apiInstance.galaxy.fetchGalaxyById(id)
       galaxy.value = response.data
-      return true;
-    } catch (error) {
-      throw error;
+      return true
     } finally {
-      loadingStore.stopLoading();
+      loadingStore.stopLoading()
     }
   }
-  
-  return {
-    galaxies,
-    galaxy,
-    fetchGalaxies,
-    fetchGalaxy,
 
-  }
+  return { galaxies, galaxy, fetchGalaxies, fetchGalaxy }
 })
