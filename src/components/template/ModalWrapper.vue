@@ -50,7 +50,7 @@ const emit = defineEmits<{
   &__close{
     position: absolute;
     top: 0;
-    right: 110px;
+    right: 125px;
     width: 36px;
     height: 36px;
     cursor: pointer;

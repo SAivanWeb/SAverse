@@ -37,7 +37,11 @@ defineProps<{
   }
 
   &__container.in {
-    animation: rocket-in 1.2s ease-out forwards;
+    animation: rocket-in-desktop 1.2s ease-out forwards;
+    @media (max-width: 900px) {
+      animation: rocket-in-mobile 1.2s ease-out forwards;
+    }
+    
   }
 
   &__container.out {
@@ -67,7 +71,7 @@ defineProps<{
   }
 }
 
-@keyframes rocket-in {
+@keyframes rocket-in-desktop {
   0% {
     left: -200px;
     opacity: 0;
@@ -84,6 +88,25 @@ defineProps<{
     transform: translateY(-50%) scale(1);
   }
 }
+
+@keyframes rocket-in-mobile {
+  0% {
+    left: -200px;
+    opacity: 0;
+    transform: translateY(-50%) scale(0.8);
+  }
+  60% {
+    left: 40%;
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+  }
+  100% {
+    left: 35%;
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
 
 @keyframes rocket-out {
   0% {
