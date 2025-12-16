@@ -8,24 +8,27 @@
       @pointerup="onPointerUp"
       @pointercancel="onPointerUp"
       @pointerleave="onPointerUp"
+      @wheel.prevent="onWheel"
     >
       <!-- stage = то, что реально двигаем/масштабируем -->
       <div class="system__stage" :style="stageStyle">
         <div class="system__center">
-          <template v-if="planets && planets.length">
+          <template v-if="planets.length">
+            <!-- орбиты -->
             <div
               v-for="(item, index) in planets"
               :key="item.id + '-orbit'"
               class="system__orbit"
               :style="{ '--radius': `${150 + index * 110}px` }"
-            ></div>
+            />
 
+            <!-- планеты -->
             <div
               v-for="(item, index) in planets"
               :key="item.id + '-wrapper'"
               class="system__planet-wrapper"
               :style="{
-                animationDuration: `${60}s`,
+                animationDuration: `60s`,
                 animationDelay: randomDelays[index] + 's',
                 '--radius': `${150 + index * 110}px`
               }"
@@ -40,17 +43,18 @@
                 text="small"
               />
             </div>
-
-            <Planet
-              class="system__star"
-              :title="star.title"
-              :size="100"
-              :color="star.color"
-              :type="star.type"
-              :id="star.id"
-              text="text-hidden"
-            />
           </template>
+
+          <!-- звезда -->
+          <Planet
+            class="system__star"
+            :title="star.title"
+            :size="100"
+            :color="star.color"
+            :type="star.type"
+            :id="star.id"
+            text="text-hidden"
+          />
         </div>
       </div>
     </div>
@@ -60,7 +64,7 @@
 <script setup lang="ts">
 import Planet from "@/components/template/Planet.vue";
 import { computed, ref } from "vue";
-import { GalaxyResponseData } from "@/api/modules/types/galaxy";
+import type { GalaxyResponseData } from "@/api/modules/types/galaxy";
 
 const props = defineProps<{ item: GalaxyResponseData }>();
 
@@ -71,13 +75,14 @@ const star = computed(() => ({
   type: "star" as const
 }));
 
-const planets = computed(() =>
-  props.item.planets?.map((p) => ({
-    id: p.id,
-    title: p.name,
-    color: p.color,
-    type: "planet" as const
-  })) ?? []
+const planets = computed(
+  () =>
+    props.item.planets?.map((p) => ({
+      id: p.id,
+      title: p.name,
+      color: p.color,
+      type: "planet" as const
+    })) ?? []
 );
 
 const randomDelays = computed(() => planets.value.map(() => -Math.random() * 30));
@@ -100,6 +105,9 @@ let pinchStartScale = 1;
 let pinchMid = { x: 0, y: 0 };
 let pinchStartXY = { x: 0, y: 0 };
 
+const isPanning = ref(false);
+const PAN_THRESHOLD = 3;
+
 const stageStyle = computed(() => ({
   transform: `translate3d(${x.value}px, ${y.value}px, 0) scale(${scale.value})`,
   transformOrigin: "0 0"
@@ -110,22 +118,31 @@ function clamp(n: number, a: number, b: number) {
 }
 
 function getDist(a: { x: number; y: number }, b: { x: number; y: number }) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.hypot(dx, dy);
+  return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
 function getMid(a: { x: number; y: number }, b: { x: number; y: number }) {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 }
 
+function isInteractiveTarget(e: PointerEvent) {
+  return !!(e.target as HTMLElement)?.closest(".system__planet");
+}
+
 function onPointerDown(e: PointerEvent) {
-  // важное: чтобы mobile не скроллил страницу жестами
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  if (e.pointerType === "mouse" && isInteractiveTarget(e)) return;
+
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+
+  if (e.pointerType !== "mouse") {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }
+
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
   if (pointers.size === 1) {
     lastPan = { x: e.clientX, y: e.clientY };
+    isPanning.value = false;
   }
 
   if (pointers.size === 2) {
@@ -140,31 +157,46 @@ function onPointerDown(e: PointerEvent) {
 
 function onPointerMove(e: PointerEvent) {
   if (!pointers.has(e.pointerId)) return;
+
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-  // 1 палец: pan
   if (pointers.size === 1) {
     const dx = e.clientX - lastPan.x;
     const dy = e.clientY - lastPan.y;
+
+    if (e.pointerType === "mouse" && !isPanning.value) {
+      if (Math.hypot(dx, dy) < PAN_THRESHOLD) return;
+      isPanning.value = true;
+    }
+
     x.value += dx;
     y.value += dy;
     lastPan = { x: e.clientX, y: e.clientY };
     return;
   }
 
-  // 2 пальца: pinch zoom + pan (по центру)
   if (pointers.size === 2) {
     const [p1, p2] = Array.from(pointers.values());
     const dist = getDist(p1, p2);
     const mid = getMid(p1, p2);
 
-    const nextScale = clamp(pinchStartScale * (dist / (pinchStartDist || 1)), MIN_SCALE, MAX_SCALE);
+    const nextScale = clamp(
+      pinchStartScale * (dist / (pinchStartDist || 1)),
+      MIN_SCALE,
+      MAX_SCALE
+    );
 
-    // чтобы масштабирование происходило "под пальцами" (как фото)
     const k = nextScale / pinchStartScale;
 
-    x.value = pinchStartXY.x + (mid.x - pinchMid.x) + (1 - k) * (pinchMid.x - pinchStartXY.x);
-    y.value = pinchStartXY.y + (mid.y - pinchMid.y) + (1 - k) * (pinchMid.y - pinchStartXY.y);
+    x.value =
+      pinchStartXY.x +
+      (mid.x - pinchMid.x) +
+      (1 - k) * (pinchMid.x - pinchStartXY.x);
+
+    y.value =
+      pinchStartXY.y +
+      (mid.y - pinchMid.y) +
+      (1 - k) * (pinchMid.y - pinchStartXY.y);
 
     scale.value = nextScale;
   }
@@ -172,10 +204,34 @@ function onPointerMove(e: PointerEvent) {
 
 function onPointerUp(e: PointerEvent) {
   pointers.delete(e.pointerId);
+
   if (pointers.size === 1) {
     const [p] = Array.from(pointers.values());
     lastPan = { x: p.x, y: p.y };
   }
+
+  if (pointers.size === 0) {
+    isPanning.value = false;
+  }
+}
+
+function onWheel(e: WheelEvent) {
+  const rect = viewportRef.value?.getBoundingClientRect();
+  if (!rect) return;
+
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  const delta = -e.deltaY;
+  const zoomFactor = delta > 0 ? 1.08 : 0.92;
+
+  const nextScale = clamp(scale.value * zoomFactor, MIN_SCALE, MAX_SCALE);
+  const k = nextScale / scale.value;
+
+  x.value = mouseX - (mouseX - x.value) * k;
+  y.value = mouseY - (mouseY - y.value) * k;
+
+  scale.value = nextScale;
 }
 </script>
 
@@ -195,8 +251,7 @@ function onPointerUp(e: PointerEvent) {
   width: 100%;
   height: 100%;
   overflow: hidden;
-
-  /* ключевой момент: иначе жесты будут скроллить страницу */
+  user-select: none;
   touch-action: none;
 }
 
