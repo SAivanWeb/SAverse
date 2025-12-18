@@ -3,7 +3,7 @@
     <div v-if="system" class="galaxy__header">
       <MainTitle :title="system.name" />
       <div class="galaxy__header-btns">
-        <MainButton v-if="system.planets.length < 5" title="Создать" @click="emit('show-planet')"/>
+        <Add v-if="system.planets.length < 5" class="galaxy__header-icon" @click="emit('show-planet')"/>
         <Edit class="galaxy__header-icon" @click="editGalaxy"/>
       </div>
     </div>
@@ -24,6 +24,7 @@ import MainButton from "@/components/ui/button/MainButton.vue";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
 import {Galaxy} from "@/api/modules/types/galaxy";
 import Edit from "@/assets/icons/edit.vue";
+import Add from "@/assets/icons/add.vue";
 
 const emit = defineEmits<{
   (e: 'show-planet'): void;
@@ -80,6 +81,9 @@ onMounted(() => {
       display: flex;
       align-items: center;
       gap: 2rem;
+      @media (max-width: 900px){
+        gap: 0.8rem;
+      }
     }
 
     &-icon{

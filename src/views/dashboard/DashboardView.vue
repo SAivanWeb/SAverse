@@ -3,7 +3,7 @@
     <div class="dashboard__container">
       <div class="dashboard__header">
         <MainTitle title="Галактики"/>
-        <MainButton title="Создать" @click="emit('show-galaxy')"/>
+        <Add class="dashboard__header-icon" @click="emit('show-galaxy')"/>
       </div>
       <div class="dashboard__list">
         <div
@@ -24,6 +24,7 @@ import Planet from "@/components/template/Planet.vue";
 import {ref, computed, onMounted} from "vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
+import Add from "@/assets/icons/add.vue";
 
 const emit = defineEmits<{
   (e: 'show-galaxy'): void;
@@ -60,6 +61,18 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    &-icon{
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      &:hover {
+        filter:
+          drop-shadow(0 0 12px rgba(255, 255, 255, 0.55))
+          drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
+      }
+    }
   }
 
   &__list{

@@ -63,7 +63,8 @@
 
     </div>
 
-    <h3 class="planet__title">
+    <h3 class="planet__title" :class="{ 'planet__title_planet': type === 'planet' }"
+        :style="{'max-width': size + 'px'}">
       {{ title }}
     </h3>
   </div>
@@ -165,7 +166,18 @@ const classes = computed(() => {
     font-size: clamp(0.8rem, 4vw, 1.4rem);
     color: #F5F5F5;
     transition: 0.3s;
-    max-width: 150px;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    &_planet {
+      max-width: 150px !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   &:hover{

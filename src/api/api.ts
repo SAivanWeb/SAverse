@@ -84,6 +84,10 @@ api.interceptors.response.use(
       router.push('/auth');
     }
 
+    if (error.response?.status === 404) {
+      router.push('/');
+    }
+
     return Promise.reject(error);
   }
 );
