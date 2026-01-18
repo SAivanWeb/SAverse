@@ -1,30 +1,32 @@
 <template>
   <n-config-provider>
-    <transition name="fade">
-      <div v-show="!showPreloader" key="content">
-        <HeaderBar @show-auth="showAuthModal = true"/>
-        <div class="main">
-          <router-view  @show-galaxy="openGalaxyModal" @show-planet="showPlanetModal = true" @show-auth="showAuthModal = true"/>
+    <n-message-provider>
+      <transition name="fade">
+        <div v-show="!showPreloader" key="content">
+          <HeaderBar @show-auth="showAuthModal = true"/>
+          <div class="main">
+            <router-view  @show-galaxy="openGalaxyModal" @show-planet="showPlanetModal = true" @show-auth="showAuthModal = true"/>
+          </div>
+
+          <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
+          <GalaxyModal
+            v-if="showGalaxyModal"
+            :edit="galaxyEditMode"
+            :galaxy="selectedGalaxy || undefined"
+            @hide-modal="closeModal"
+          />
+          <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
         </div>
+      </transition>
 
-        <AuthModal v-if="showAuthModal" @hide-modal="closeModal"/>
-        <GalaxyModal
-          v-if="showGalaxyModal"
-          :edit="galaxyEditMode"
-          :galaxy="selectedGalaxy || undefined"
-          @hide-modal="closeModal"
-        />
-        <PlanetModal v-if="showPlanetModal" @hide-modal="closeModal"/>
-      </div>
-    </transition>
-
-    <transition name="fade">
-      <div v-show="showPreloader" key="preloader">
-        <Preloader :active="showPreloader" />
-      </div>
-    </transition>
-    <BackgroundAnimation class="main__background" :faster="showPreloader"/>
-
+      <transition name="fade">
+        <div v-show="showPreloader" key="preloader">
+          <Preloader :active="showPreloader" />
+        </div>
+      </transition>
+      <BackgroundAnimation class="main__background" :faster="showPreloader"/>
+      <NotifyHost/>
+    </n-message-provider>
   </n-config-provider>
 </template>
 
@@ -35,11 +37,11 @@ import Preloader from "@/components/template/Preloader.vue";
 import AuthModal from "@/components/template/modals/AuthModal.vue";
 import GalaxyModal from "@/components/template/modals/GalaxyModal.vue";
 import PlanetModal from "@/components/template/modals/PlanetModal.vue";
-
 import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useLoadingStore } from "@/store/useLoadingStore";
 import {Galaxy} from "@/api/modules/types/galaxy";
+import NotifyHost from "@/components/template/NotifyHost.vue";
 
 const loadingStore = useLoadingStore();
 const { loading } = storeToRefs(loadingStore);
@@ -76,7 +78,7 @@ watch(loading, (newVal) => {
   } else {
     setTimeout(() => {
       showPreloader.value = false;
-    }, 1500);
+    }, 500);
   }
 });
 </script>

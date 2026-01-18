@@ -14,9 +14,9 @@
         <ColorPicker v-model:modelValue="galaxyData.color" label="Цвет галактики"/>
       </div>
       <div class="modal__button-group">
-        <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy"/>
+        <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy" :disabled="createDisabled"/>
         <MainButton v-if="edit" title="Удалить" color="black" size="large" @click="deleteGalaxy"/>
-        <MainButton v-if="edit" title="Сохранить" color="black" size="large" @click="updateGalaxy"/>
+        <MainButton v-if="edit" title="Сохранить" color="black" size="large" @click="updateGalaxy" :disabled="createDisabled"/>
       </div>
     </template>
   </ModalWrapper>
@@ -26,7 +26,7 @@
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
-import {inject, ref, watch} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import ColorPicker from "@/components/ui/picker/ColorPicker.vue";
 import { apiKey } from '@/plugins/api';
 import type {ApiInstance} from "@/api";
@@ -56,6 +56,9 @@ const loadingStore = useLoadingStore();
 const galaxyData = ref<CreateGalaxyPayload>({
   name: "",
   color: "#000000"
+})
+const createDisabled = computed(() => {
+  return !galaxyData.value.name || !galaxyData.value.color;
 })
 
 watch(

@@ -14,6 +14,7 @@ interface Props {
   title: string
   color?: string
   size?: string
+  disabled?: boolean
 }
 
 const props = defineProps<Props>();
@@ -25,6 +26,9 @@ const classes = computed(() => {
   }
   if (props.size) {
     classes.push(`button_${props.size}`);
+  }
+  if (props.disabled) {
+    classes.push(`button_disabled`);
   }
   return classes;
 })
@@ -50,6 +54,12 @@ const classes = computed(() => {
     &:hover {
       box-shadow: none;
     }
+  }
+
+  &_disabled{
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: rgb(52, 53, 53) !important;
   }
 
   &_black{

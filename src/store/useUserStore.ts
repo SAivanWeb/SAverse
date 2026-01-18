@@ -29,9 +29,11 @@ export const useUserStore = defineStore('useUserStore', () => {
       localStorage.setItem('refresh_token', response.data.refresh_token);
       return true;
     } catch (error) {
-      errorMessage.value =
-        typeof error === 'string' ? error : 'Ошибка регистрации';
-      throw error;
+      if (error === 'Email already taken') {
+        loadingStore.setMessage('error', 'Пользователь с таким Email уже существует');
+      } else {
+        loadingStore.setMessage('error', 'Непредвиденная ошибка регистрации')
+      }
     } finally {
       loadingStore.stopLoading();
     }
@@ -47,9 +49,11 @@ export const useUserStore = defineStore('useUserStore', () => {
       localStorage.setItem('refresh_token', response.data.refresh_token);
       return true;
     } catch (error) {
-      errorMessage.value =
-        typeof error === 'string' ? error : 'Ошибка авторизации';
-      throw error;
+      if (error === 'Invalid credentials') {
+        loadingStore.setMessage('error', 'Неверный логин или пароль');
+      } else {
+        loadingStore.setMessage('error', 'Непредвиденная ошибка авторизации')
+      }
     } finally {
       loadingStore.stopLoading();
     }
@@ -59,6 +63,7 @@ export const useUserStore = defineStore('useUserStore', () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     router.push('/');
+    currentUser.value = '';
   }
 
   async function initUser() {

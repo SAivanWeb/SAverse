@@ -14,8 +14,8 @@
         <MainInput v-model="authData.password" id="password" name="password" placeholder="Пароль" type="password" label="Пароль"/>
       </div>
       <div class="modal__button-group">
-        <MainButton v-if="authType === 'reg'" title="Регистрация" color="black" size="large" @click="register"/>
-        <MainButton v-else title="Вход" color="black" size="large" @click="login"/>
+        <MainButton v-if="authType === 'reg'" title="Регистрация" color="black" size="large" @click="register" :disabled="authDisabled"/>
+        <MainButton v-else title="Вход" color="black" size="large" @click="login" :disabled="authDisabled"/>
       </div>
       <div class="modal__additional">
         <p v-if="authType === 'auth'">Еще нет аккаунта?
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
 import type {AuthData} from "@/api/modules/types/user";
@@ -48,6 +48,9 @@ const authType = ref<string>('reg');
 const authData = ref<AuthData>({
   email: "",
   password: "",
+})
+const authDisabled = computed(() => {
+  return !authData.value.email || !authData.value.password;
 })
 
 

@@ -1,12 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+type MessageType = "success" | "error" | "warning" | "info" | "";
+interface Message {
+  type: MessageType;
+  message: string;
+}
 
 export const useLoadingStore = defineStore('loadingStore', () => {
   // глобальный флаг
   const loading = ref(false)
   // счётчик параллельных запросов
   const pendingCount = ref(0)
-
+  const message = ref<Message>({
+    type: '',
+    message: '',
+  })
   function startLoading() {
     pendingCount.value += 1
     loading.value = true
@@ -24,11 +32,23 @@ export const useLoadingStore = defineStore('loadingStore', () => {
     loading.value = false
   }
 
+  const setMessage = (type: MessageType, text: string) => {
+    message.value.type = type;
+    message.value.message = text;
+  }
+
+  const clearMessage = () => {
+    message.value.message = '';
+    message.value.type = '';
+  }
+
   return {
     loading,
     pendingCount,
+    message,
     startLoading,
     stopLoading,
-    resetLoading
+    setMessage,
+    clearMessage,
   }
 })

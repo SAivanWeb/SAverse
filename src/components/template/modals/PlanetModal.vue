@@ -15,7 +15,7 @@
       </div>
       <div class="modal__button-group">
         <div class="modal__button-group">
-          <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy"/>
+          <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy" :disabled="createDisabled"/>
           <MainButton v-if="edit" title="Сохранить" color="black" size="large" @click=""/>
         </div>
       </div>
@@ -27,7 +27,7 @@
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
-import {inject, ref} from "vue";
+import {computed, inject, ref} from "vue";
 import ColorPicker from "@/components/ui/picker/ColorPicker.vue";
 import {CreatePlanetPayload, Planet} from "@/api/modules/types/galaxy";
 import {useRoute} from "vue-router";
@@ -59,6 +59,9 @@ const galaxyData = ref<CreatePlanetPayload>({
   name: "",
   color: "#000000",
   id_galaxy: null
+})
+const createDisabled = computed(() => {
+  return !galaxyData.value.name || !galaxyData.value.color;
 })
 
 async function createGalaxy() {

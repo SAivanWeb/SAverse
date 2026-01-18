@@ -26,6 +26,7 @@ import api from '@/api'
 import type { ApiInstance } from '@/api'
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import {Planet, UpdatePlanetPayload} from "@/api/modules/types/galaxy";
+import galaxy from "@/api/modules/galaxy";
 
 const apiInstance: ApiInstance = api
 const loadingStore = useLoadingStore();
@@ -37,10 +38,17 @@ const planet = ref<Planet>()
 
 async function fetchPlanet(id: number) {
   loadingStore.startLoading();
-  const res = await apiInstance.galaxy.fetchPlanetById(id);
-  if (res.success) {
-    planet.value = res.data;
-    content.value = planet.value.note;
+  try {
+    const res = await apiInstance.galaxy.fetchPlanetById(id);
+    if (res.success) {
+      planet.value = res.data;
+      content.value = planet.value.note;
+      loadingStore.stopLoading();
+    }
+  } catch (e) {
+    loadingStore.setMessage('error', 'Ошибка получения планеты');
+    await router.push(`/dashboard`);
+  } finally {
     loadingStore.stopLoading();
   }
 }
@@ -57,6 +65,7 @@ async function updatePlanet() {
   const res = await api.galaxy.updatePlanet(planet.value.id, payload);
   if (res.success) {
     await fetchPlanet(planetId.value);
+    await router.push(`/galaxy/${planet.value.id_galaxy}`);
   }
   loadingStore.stopLoading();
 }

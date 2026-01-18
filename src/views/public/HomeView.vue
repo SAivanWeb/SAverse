@@ -193,8 +193,10 @@ const onPrimaryClick = () => {
   /* Превью «системы» справа */
   &__hero-preview {
     position: relative;
-    height: 360px;
+    height: 290px;
     border-radius: 999px;
+    width: 290px;
+    margin: 0 auto;
   }
 
   &__orbit {
@@ -237,22 +239,22 @@ const onPrimaryClick = () => {
     border-radius: 50%;
 
     &--one {
-      top: 18%;
-      left: 58%;
+      top: 50px;
+      right: 67px;
       background: #8bd5ff;
       box-shadow: 0 0 10px rgba(139, 213, 255, 0.9);
     }
 
     &--two {
-      bottom: 18%;
-      left: 32%;
+      bottom: 55px;
+      left: 60px;
       background: #ff7ad9;
       box-shadow: 0 0 10px rgba(255, 122, 217, 0.9);
     }
 
     &--three {
-      top: 55%;
-      right: 18%;
+      bottom: 105px;
+      right: 71px;
       background: #7dff9c;
       box-shadow: 0 0 10px rgba(125, 255, 156, 0.9);
     }

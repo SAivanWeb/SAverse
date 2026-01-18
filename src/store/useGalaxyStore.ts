@@ -4,11 +4,12 @@ import api from '@/api'
 import type { ApiInstance } from '@/api'
 import type { Galaxy, GalaxyListResponse, GalaxyResponse, GalaxyResponseData } from '@/api/modules/types/galaxy'
 import { useLoadingStore } from '@/store/useLoadingStore'
+import {useRouter} from 'vue-router'
 
 export const useGalaxyStore = defineStore('useGalaxyStore', () => {
   const galaxies = ref<Galaxy[] | null>(null)
   const galaxy = ref<GalaxyResponseData | null>(null)
-
+  const router = useRouter();
   const apiInstance: ApiInstance = api
   const loadingStore = useLoadingStore()
 
@@ -29,6 +30,9 @@ export const useGalaxyStore = defineStore('useGalaxyStore', () => {
       const response: GalaxyResponse = await apiInstance.galaxy.fetchGalaxyById(id)
       galaxy.value = response.data
       return true
+    } catch (e) {
+      loadingStore.setMessage('error', 'Ошибка получения галактики');
+      await router.push(`/dashboard`);
     } finally {
       loadingStore.stopLoading()
     }
