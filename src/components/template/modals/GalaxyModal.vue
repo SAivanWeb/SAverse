@@ -15,11 +15,13 @@
       </div>
       <div class="modal__button-group">
         <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy" :disabled="createDisabled"/>
-        <MainButton v-if="edit" title="Удалить" color="black" size="large" @click="deleteGalaxy"/>
+        <MainButton v-if="edit" title="Удалить" color="black" size="large" @click="showDelete = true"/>
         <MainButton v-if="edit" title="Сохранить" color="black" size="large" @click="updateGalaxy" :disabled="createDisabled"/>
       </div>
     </template>
   </ModalWrapper>
+
+  <DeleteModal v-if="showDelete" @hide-modal="showDelete = false" @delete="deleteGalaxy"/>
 </template>
 
 <script setup lang="ts">
@@ -34,6 +36,7 @@ import {useLoadingStore} from "@/store/useLoadingStore";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
 import {CreateGalaxyPayload, Galaxy} from "@/api/modules/types/galaxy";
 import {useRouter} from "vue-router";
+import DeleteModal from "@/components/template/modals/DeleteModal.vue";
 
 const emit = defineEmits<{
   (e: 'hide-modal'): void
@@ -52,6 +55,7 @@ const router = useRouter();
 const api = inject<ApiInstance>(apiKey)!;
 const galaxyStore = useGalaxyStore();
 const loadingStore = useLoadingStore();
+const showDelete = ref<boolean>(false);
 
 const galaxyData = ref<CreateGalaxyPayload>({
   name: "",
@@ -84,9 +88,7 @@ async function createGalaxy() {
   const res = await api.galaxy.createGalaxy(galaxyData.value);
   if (res.success) {
     emit('hide-modal');
-    setTimeout(() => {
-      galaxyStore.fetchGalaxies();
-    }, 1000)
+    await galaxyStore.fetchGalaxies();
     loadingStore.stopLoading();
   }
 }

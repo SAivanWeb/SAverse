@@ -9,11 +9,12 @@
         />
       </div>
       <div class="note__buttons">
-        <MainButton title="Удалить" @click="deletePlanet"/>
+        <MainButton title="Удалить" @click="showDelete = true"/>
         <MainButton class="note__buttons-save" title="Сохранить" @click="updatePlanet"/>
       </div>
     </div>
   </MainWrapper>
+  <DeleteModal v-if="showDelete" @hide-modal="showDelete = false" @delete="deletePlanet"/>
 </template>
 
 <script lang="ts" setup>
@@ -27,6 +28,7 @@ import type { ApiInstance } from '@/api'
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import {Planet, UpdatePlanetPayload} from "@/api/modules/types/galaxy";
 import galaxy from "@/api/modules/galaxy";
+import DeleteModal from "@/components/template/modals/DeleteModal.vue";
 
 const apiInstance: ApiInstance = api
 const loadingStore = useLoadingStore();
@@ -35,6 +37,7 @@ const router = useRouter();
 const content = ref<string>('')
 const planetId = ref<number>(0);
 const planet = ref<Planet>()
+const showDelete = ref<boolean>(false);
 
 async function fetchPlanet(id: number) {
   loadingStore.startLoading();

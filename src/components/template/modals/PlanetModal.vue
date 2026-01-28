@@ -73,10 +73,8 @@ async function createGalaxy() {
   const res = await api.galaxy.createPlanet(galaxyData.value);
   if (res.success) {
     emit('hide-modal');
-    setTimeout(() => {
-      galaxyId.value = Number(route.params.id);
-      galaxyStore.fetchGalaxy(galaxyId.value);
-    }, 1000)
+    galaxyId.value = Number(route.params.id);
+    await galaxyStore.fetchGalaxy(galaxyId.value);
     loadingStore.stopLoading();
   }
 }

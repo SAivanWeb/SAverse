@@ -112,5 +112,21 @@ const emit = defineEmits<{
       text-decoration: underline;
     }
   }
+
+  &__delete{
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+
+    &-text{
+      color: #0D1117;
+      font-size: 24px;
+    }
+
+    &-btns{
+      display: flex;
+      gap: 12px;
+    }
+  }
 }
 </style>
