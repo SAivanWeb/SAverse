@@ -1,7 +1,13 @@
 <template>
   <MainWrapper>
     <div v-if="planet" class="note">
-      <MainTitle :title="planet?.name"/>
+      <div class="note__header">
+        <MainTitle :title="planet?.name"/>
+        <span class="note__autosave" :class="saveStatus">
+          <template v-if="saveStatus === 'saving'">Сохранение...</template>
+          <template v-else-if="saveStatus === 'saved'">Сохранено</template>
+        </span>
+      </div>
       <div class="note__editor">
         <QuillEditor
           v-model:content="content"
@@ -18,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, watch, nextTick} from 'vue'
 import MainWrapper from "@/components/template/MainWrapper.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
 import {useRoute, useRouter} from "vue-router";
@@ -38,6 +44,11 @@ const content = ref<string>('')
 const planetId = ref<number>(0);
 const planet = ref<Planet>()
 const showDelete = ref<boolean>(false);
+const isLoaded = ref<boolean>(false);
+const saveStatus = ref<'idle' | 'saving' | 'saved'>('idle');
+const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const lastSavedAt = ref<number>(0);
+const THROTTLE_MS = 5_000;
 
 async function fetchPlanet(id: number) {
   loadingStore.startLoading();
@@ -46,6 +57,9 @@ async function fetchPlanet(id: number) {
     if (res.success) {
       planet.value = res.data;
       content.value = planet.value.note;
+      await nextTick();
+      isLoaded.value = true;
+      lastSavedAt.value = Date.now();
       loadingStore.stopLoading();
     }
   } catch (e) {
@@ -56,9 +70,32 @@ async function fetchPlanet(id: number) {
   }
 }
 
+async function autoSave() {
+  try {
+    if (!planet.value) return;
+    saveStatus.value = 'saving';
+    lastSavedAt.value = Date.now();
+    const payload: UpdatePlanetPayload = {
+      name: planet.value.name,
+      color: planet.value.color,
+      note: content.value,
+      id_galaxy: planet.value.id_galaxy
+    };
+    await api.galaxy.updatePlanet(planet.value.id, payload);
+    saveStatus.value = 'saved';
+    setTimeout(() => { saveStatus.value = 'idle'; }, 1000);
+  } catch {
+    loadingStore.setMessage('error', 'Ошибка автосохранения')
+  }
+}
+
 async function updatePlanet() {
   if (!planet.value) return;
-  loadingStore.startLoading()
+  loadingStore.startLoading();
+  if (saveTimer.value) {
+    clearTimeout(saveTimer.value);
+    saveTimer.value = null;
+  }
   const payload: UpdatePlanetPayload = {
     name: planet.value.name,
     color: planet.value.color,
@@ -67,11 +104,20 @@ async function updatePlanet() {
   };
   const res = await api.galaxy.updatePlanet(planet.value.id, payload);
   if (res.success) {
-    await fetchPlanet(planetId.value);
     await router.push(`/galaxy/${planet.value.id_galaxy}`);
   }
   loadingStore.stopLoading();
 }
+
+watch(content, () => {
+  if (!isLoaded.value) return;
+  if (saveTimer.value) clearTimeout(saveTimer.value);
+  if (Date.now() - lastSavedAt.value >= THROTTLE_MS) {
+    autoSave();
+  } else {
+    saveTimer.value = setTimeout(autoSave, 500);
+  }
+});
 
 async function deletePlanet() {
   if (!planet.value) return;
@@ -98,13 +144,37 @@ onMounted(() => {
   flex-direction: column;
   gap: 1rem;
 
+  &__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &__buttons{
     display: flex;
     gap: 1rem;
     width: 100%;
+    align-items: center;
 
     &-save{
       margin-left: auto;
+    }
+  }
+
+  &__autosave {
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+
+    &.saving {
+      opacity: 0.6;
+      color: #fff;
+    }
+
+    &.saved {
+      opacity: 0.9;
+      color: #6ee7b7;
     }
   }
 }
