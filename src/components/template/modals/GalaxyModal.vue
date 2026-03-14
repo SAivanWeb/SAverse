@@ -11,7 +11,10 @@
     <template #body>
       <div class="modal__form">
         <MainInput v-model="galaxyData.name" id="name" name="name" placeholder="Введите название" type="text" label="Название"/>
-        <ColorPicker v-model:modelValue="galaxyData.color" label="Цвет галактики"/>
+        <div class="modal__form-row">
+          <ColorPicker v-model:modelValue="galaxyData.color" label="Цвет галактики"/>
+          <MainSelect v-model="galaxyData.view" id="view" label="Вид" placeholder="Выберите вид" :options="viewOptions"/>
+        </div>
       </div>
       <div class="modal__button-group">
         <MainButton v-if="!edit" title="Создать" color="black" size="large" @click="createGalaxy" :disabled="createDisabled"/>
@@ -28,6 +31,7 @@
 import ModalWrapper from "@/components/template/ModalWrapper.vue";
 import MainInput from "@/components/ui/input/MainInput.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
+import MainSelect from "@/components/ui/select/MainSelect.vue";
 import {computed, inject, ref, watch} from "vue";
 import ColorPicker from "@/components/ui/picker/ColorPicker.vue";
 import { apiKey } from '@/plugins/api';
@@ -57,9 +61,18 @@ const galaxyStore = useGalaxyStore();
 const loadingStore = useLoadingStore();
 const showDelete = ref<boolean>(false);
 
+const viewOptions = [
+  { label: 'Шар',    value: 'ball'      },
+  { label: 'Звезда', value: 'star'      },
+  { label: 'Сердце', value: 'heart'     },
+  { label: 'Месяц',  value: 'moon'      },
+  { label: 'Молния', value: 'lightning' },
+]
+
 const galaxyData = ref<CreateGalaxyPayload>({
   name: "",
-  color: "#000000"
+  color: "#000000",
+  view: "",
 })
 const createDisabled = computed(() => {
   return !galaxyData.value.name || !galaxyData.value.color;
@@ -71,12 +84,14 @@ watch(
     if (val && props.edit) {
       galaxyData.value = {
         name: val.name,
-        color: val.color
+        color: val.color,
+        view: val.view ?? "",
       };
     } else if (!props.edit) {
       galaxyData.value = {
         name: "",
-        color: "#000000"
+        color: "#000000",
+        view: "",
       };
     }
   },

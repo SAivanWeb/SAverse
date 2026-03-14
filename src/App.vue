@@ -72,12 +72,19 @@ const openGalaxyModal = (galaxy?: Galaxy) => {
   showGalaxyModal.value = true;
 };
 
+let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
 watch(loading, (newVal) => {
   if (newVal) {
+    if (hideTimer !== null) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
     showPreloader.value = true;
   } else {
-    setTimeout(() => {
+    hideTimer = setTimeout(() => {
       showPreloader.value = false;
+      hideTimer = null;
     }, 500);
   }
 });

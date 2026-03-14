@@ -87,7 +87,12 @@ const emit = defineEmits<{
   &__form{
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+
+    &-row{
+      display: flex;
+      gap: 8px;
+    }
   }
 
   &__button-group{

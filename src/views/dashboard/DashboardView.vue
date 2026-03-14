@@ -10,7 +10,7 @@
           v-for="(item, index) in galaxies"
           :class="['dashboard__list-item', { 'dashboard__list-item_even': index % 2 === 1 }]"
         >
-          <Planet :title="item.name" :size="starSize" :color="item.color" type="star" :id="item.id"/>
+          <Planet :title="item.name" :size="starSize" :color="item.color" type="star" :id="item.id" :view="item.view"/>
         </div>
       </div>
     </div>
@@ -55,6 +55,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 5rem;
+    padding-bottom: 72px;
   }
   
   &__header{

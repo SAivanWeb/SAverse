@@ -53,6 +53,7 @@
             :color="star.color"
             :type="star.type"
             :id="star.id"
+            :view="star.view"
             text="text-hidden"
           />
         </div>
@@ -72,7 +73,8 @@ const star = computed(() => ({
   id: props.item.id,
   title: props.item.name,
   color: props.item.color,
-  type: "star" as const
+  type: "star" as const,
+  view: props.item.view
 }));
 
 const planets = computed(

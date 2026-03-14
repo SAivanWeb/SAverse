@@ -3,6 +3,7 @@ export interface Galaxy {
   id: number;
   name: string;
   color: string;
+  view?: string;
 }
 
 export interface Planet {
@@ -10,6 +11,7 @@ export interface Planet {
   name: string;
   color: string;
   note: string;
+  view?: string;
   id_galaxy: number;
 }
 
@@ -26,6 +28,7 @@ export interface GalaxyResponseData {
   id: number;
   name: string;
   color: string;
+  view?: string;
   planets: Planet[];
 }
 
@@ -37,11 +40,13 @@ export interface GalaxyResponse {
 export interface CreateGalaxyPayload {
   name: string;
   color: string;
+  view?: string;
 }
 
 export interface UpdateGalaxyPayload {
   name?: string;
   color?: string;
+  view?: string;
 }
 
 export interface DeleteGalaxyResponse {

@@ -27,6 +27,7 @@ export const useUserStore = defineStore('useUserStore', () => {
       const response: AuthResponse = await api.user.register(payload);
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('refresh_token', response.data.refresh_token);
+      await initUser();
       return true;
     } catch (error) {
       if (error === 'Email already taken') {
@@ -47,6 +48,7 @@ export const useUserStore = defineStore('useUserStore', () => {
       const response: AuthResponse = await api.user.login(payload);
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('refresh_token', response.data.refresh_token);
+      await initUser();
       return true;
     } catch (error) {
       if (error === 'Invalid credentials') {
