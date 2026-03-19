@@ -30,10 +30,10 @@ defineProps<{
   &__container {
     position: absolute;
     top: 50%;
-    left: -200px;
+    left: 0;
     display: flex;
     align-items: center;
-    transform: translateY(-50%);
+    will-change: transform, opacity;
   }
 
   &__container.in {
@@ -67,60 +67,52 @@ defineProps<{
     );
     filter: blur(4px);
     opacity: 0.9;
+    will-change: filter, opacity, transform;
     animation: flame-flicker 0.25s infinite alternate;
   }
 }
 
 @keyframes rocket-in-desktop {
   0% {
-    left: -200px;
     opacity: 0;
-    transform: translateY(-50%) scale(0.8);
+    transform: translateY(-50%) translateX(-200px) scale(0.8);
   }
   60% {
-    left: 55%;
     opacity: 1;
-    transform: translateY(-50%) scale(1.05);
+    transform: translateY(-50%) translateX(55vw) scale(1.05);
   }
   100% {
-    left: 50%;
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) translateX(50vw) scale(1);
   }
 }
 
 @keyframes rocket-in-mobile {
   0% {
-    left: -200px;
     opacity: 0;
-    transform: translateY(-50%) scale(0.8);
+    transform: translateY(-50%) translateX(-200px) scale(0.8);
   }
   60% {
-    left: 40%;
     opacity: 1;
-    transform: translateY(-50%) scale(1.05);
+    transform: translateY(-50%) translateX(40vw) scale(1.05);
   }
   100% {
-    left: 35%;
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) translateX(35vw) scale(1);
   }
 }
 
-
 @keyframes rocket-out {
   0% {
-    left: 50%;
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) translateX(50vw) scale(1);
   }
   30% {
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) translateX(50vw) scale(1.1);
   }
   100% {
-    left: 120%;
     opacity: 0;
-    transform: translateY(-50%) scale(0.8);
+    transform: translateY(-50%) translateX(120vw) scale(0.8);
   }
 }
 

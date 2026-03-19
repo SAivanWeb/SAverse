@@ -46,14 +46,16 @@
       </template>
 
       <template v-else-if="type === 'star'">
+        <div class="planet_star" :style="{ width: size + 'px', height: size + 'px' }">
         <div
-          class="planet_star"
+          class="planet_star__glow"
           :style="{
             filter: `
               drop-shadow(0 0 ${size * 0.2}px ${lighter(baseColor, 0.3)})
               drop-shadow(0 0 ${size * 0.4}px ${baseColor}80)
               drop-shadow(0 0 ${size * 0.8}px ${darker(baseColor, 0.2)}50)
-            `
+            `,
+            inset: `-${size}px`,
           }"
         >
           <svg :width="size" :height="size" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -82,6 +84,7 @@
             <!-- fallback -->
             <circle v-else cx="50" cy="50" r="50" :fill="`url(#rg-${id})`"/>
           </svg>
+        </div>
         </div>
       </template>
 
@@ -190,7 +193,7 @@ const classes = computed(() => {
   &__title{
     font-size: clamp(0.8rem, 4vw, 1.4rem);
     color: #F5F5F5;
-    transition: 0.3s;
+    transition: filter 0.3s, transform 0.3s;
     text-align: center;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -207,15 +210,23 @@ const classes = computed(() => {
 
   &:hover{
     & .planet__title{
-      text-shadow:
-        0 0 12px rgba(255, 255, 255, 0.55),
-        0 0 25px rgba(255, 255, 255, 0.2);
+      filter:
+        drop-shadow(0 0 12px rgba(255, 255, 255, 0.55))
+        drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
       transform: translateY(-2px);
     }
   }
 
   &_star{
-    display: flex;
+    position: relative;
+
+    &__glow {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
   }
 }
 </style>
