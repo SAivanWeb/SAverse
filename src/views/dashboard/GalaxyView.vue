@@ -1,5 +1,5 @@
 <template>
-  <MainWrapper>
+  <MainWrapper backTo="/dashboard">
     <div v-if="system" class="galaxy__header">
       <MainTitle :title="system.name" />
       <div class="galaxy__header-btns">

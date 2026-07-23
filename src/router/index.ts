@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import {useUserStore} from "@/store/useUserStore";
+import {useLoadingStore} from "@/store/useLoadingStore";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -41,6 +42,10 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  // прячем текущий контент и запускаем прелоадер до того,
+  // как новая страница начнёт монтироваться и подгружать данные
+  useLoadingStore().startLoading()
+
   const userStore = useUserStore()
 
   const hasToken = !!localStorage.getItem('access_token')
@@ -60,6 +65,12 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'Dashboard' })
   }
   return next()
+})
+
+router.afterEach(() => {
+  // снимаем "флаг перехода"; итоговая видимая длительность прелоадера
+  // (минимум 2с) контролируется в App.vue
+  useLoadingStore().stopLoading()
 })
 
 export default router

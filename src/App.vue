@@ -1,7 +1,7 @@
 <template>
   <n-config-provider>
     <n-message-provider>
-      <transition name="fade">
+      <transition name="content-fade">
         <div v-show="!showPreloader" key="content">
           <HeaderBar @show-auth="showAuthModal = true"/>
           <div class="main">
@@ -72,7 +72,9 @@ const openGalaxyModal = (galaxy?: Galaxy) => {
   showGalaxyModal.value = true;
 };
 
+const MIN_PRELOADER_MS = 2000;
 let hideTimer: ReturnType<typeof setTimeout> | null = null;
+let shownAt = 0;
 
 watch(loading, (newVal) => {
   if (newVal) {
@@ -80,12 +82,16 @@ watch(loading, (newVal) => {
       clearTimeout(hideTimer);
       hideTimer = null;
     }
-    showPreloader.value = true;
+    if (!showPreloader.value) {
+      shownAt = Date.now();
+      showPreloader.value = true;
+    }
   } else {
+    const remaining = Math.max(0, MIN_PRELOADER_MS - (Date.now() - shownAt));
     hideTimer = setTimeout(() => {
       showPreloader.value = false;
       hideTimer = null;
-    }, 500);
+    }, remaining);
   }
 });
 </script>
@@ -113,6 +119,20 @@ watch(loading, (newVal) => {
 }
 .fade-enter-from,
 .fade-leave-to {
+  opacity: 0;
+}
+
+/* контент должен прятаться мгновенно (без "просвечивания" новой
+   страницы под полупрозрачным старым контентом), но может плавно
+   появляться обратно после того, как прелоадер скрылся */
+.content-fade-enter-active {
+  transition: opacity 0.3s ease;
+}
+.content-fade-leave-active {
+  transition: none;
+}
+.content-fade-enter-from,
+.content-fade-leave-to {
   opacity: 0;
 }
 </style>

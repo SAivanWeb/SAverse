@@ -1,5 +1,5 @@
 <template>
-  <MainWrapper>
+  <MainWrapper :backTo="planet ? `/galaxy/${planet.id_galaxy}` : undefined">
     <div v-if="planet" class="note">
       <div class="note__header">
         <MainTitle :title="planet?.name"/>
@@ -12,6 +12,7 @@
         <QuillEditor
           v-model:content="content"
           contentType="html"
+          :toolbar="toolbarOptions"
         />
       </div>
       <div class="note__buttons">
@@ -49,6 +50,12 @@ const saveStatus = ref<'idle' | 'saving' | 'saved'>('idle');
 const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 const lastSavedAt = ref<number>(0);
 const THROTTLE_MS = 5_000;
+const toolbarOptions = [
+  [{header: ['1', '2', '3', false]}],
+  ['bold', 'italic', 'underline', 'link'],
+  [{list: 'ordered'}, {list: 'bullet'}, {list: 'check'}],
+  ['clean']
+];
 
 async function fetchPlanet(id: number) {
   loadingStore.startLoading();
@@ -268,7 +275,35 @@ onMounted(() => {
 .ql-container .ql-editor ul,
 .ql-container .ql-editor ol {
   padding-left: 1.25em;
-  margin: 0 0 0.8em;
+}
+
+/* Чек-листы */
+.ql-container .ql-editor ul[data-checked] > li::before {
+  content: '';
+  display: inline-block;
+  box-sizing: border-box;
+  width: 1.1em;
+  height: 1.1em;
+  margin-left: -1.6em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+  vertical-align: -0.15em;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ql-container .ql-editor ul[data-checked=true] > li::before {
+  border-color: #ffffff;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d1117' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 9 17 20 6'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.ql-container .ql-editor ul[data-checked=true] > li {
+  text-decoration: line-through;
 }
 
 /* Цитата/код (если используешь) */
