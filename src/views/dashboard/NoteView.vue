@@ -54,8 +54,8 @@ async function fetchPlanet(id: number) {
   loadingStore.startLoading();
   try {
     const res = await apiInstance.galaxy.fetchPlanetById(id);
-    if (res.success) {
-      planet.value = res.data;
+    if (res.code === 200) {
+      planet.value = res.data.planet;
       content.value = planet.value.note;
       await nextTick();
       isLoaded.value = true;
@@ -103,7 +103,7 @@ async function updatePlanet() {
     id_galaxy: planet.value.id_galaxy
   };
   const res = await api.galaxy.updatePlanet(planet.value.id, payload);
-  if (res.success) {
+  if (res.code === 200) {
     await router.push(`/galaxy/${planet.value.id_galaxy}`);
   }
   loadingStore.stopLoading();
@@ -123,7 +123,7 @@ async function deletePlanet() {
   if (!planet.value) return;
   loadingStore.startLoading()
   const res = await api.galaxy.deletePlanet(planet.value.id);
-  if (res.success) {
+  if (res.code === 200) {
     await router.push(`/galaxy/${planet.value.id_galaxy}`);
   }
   loadingStore.stopLoading();

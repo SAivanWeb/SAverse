@@ -71,7 +71,7 @@ async function createGalaxy() {
     galaxyData.value.id_galaxy = galaxyId.value;
   }
   const res = await api.galaxy.createPlanet(galaxyData.value);
-  if (res.success) {
+  if (res.code === 200) {
     emit('hide-modal');
     galaxyId.value = Number(route.params.id);
     await galaxyStore.fetchGalaxy(galaxyId.value);

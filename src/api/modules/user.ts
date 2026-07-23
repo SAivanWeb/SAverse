@@ -1,11 +1,7 @@
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import api from '../api';
+import { extractErrorMessage } from '@/api/utils';
 import {AuthResponse, AuthData, currentUserResponse} from '@/api/modules/types/user';
-
-type ErrorResponse = {
-  success: boolean;
-  error?: string;
-};
 
 export default {
   async register(payload: AuthData): Promise<AuthResponse> {
@@ -16,8 +12,7 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -29,8 +24,7 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -39,8 +33,7 @@ export default {
       const { data }: AxiosResponse<currentUserResponse> = await api.get('/auth/me',);
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   }
 };

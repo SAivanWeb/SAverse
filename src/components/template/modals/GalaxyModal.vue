@@ -101,7 +101,7 @@ watch(
 async function createGalaxy() {
   loadingStore.startLoading();
   const res = await api.galaxy.createGalaxy(galaxyData.value);
-  if (res.success) {
+  if (res.code === 200) {
     emit('hide-modal');
     await galaxyStore.fetchGalaxies();
     loadingStore.stopLoading();
@@ -113,7 +113,7 @@ async function updateGalaxy() {
   try {
     loadingStore.startLoading();
     const res = await api.galaxy.updateGalaxy(props.galaxy.id, galaxyData.value);
-    if (res.success) {
+    if (res.code === 200) {
       await galaxyStore.fetchGalaxy(props.galaxy.id);
       emit("hide-modal");
     }
@@ -127,7 +127,7 @@ async function deleteGalaxy() {
   try {
     loadingStore.startLoading();
     const res = await api.galaxy.deleteGalaxy(props.galaxy.id);
-    if (res.success) {
+    if (res.code === 200) {
       setTimeout(() => {
         router.push('/dashboard');
       }, 1000)

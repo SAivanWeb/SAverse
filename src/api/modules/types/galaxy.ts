@@ -1,3 +1,4 @@
+import type { ApiResponse } from '@/api/modules/types/common';
 
 export interface Galaxy {
   id: number;
@@ -19,23 +20,13 @@ export interface PlanetWithGalaxy extends Planet {
   galaxy: Galaxy;
 }
 
-export interface GalaxyListResponse {
-  success: boolean;
-  data: GalaxyResponseData[];
-}
+export type GalaxyListResponse = ApiResponse<Galaxy[]>;
 
-export interface GalaxyResponseData {
-  id: number;
-  name: string;
-  color: string;
-  view?: string;
+export interface GalaxyResponseData extends Galaxy {
   planets: Planet[];
 }
 
-export interface GalaxyResponse {
-  success: boolean;
-  data: GalaxyResponseData;
-}
+export type GalaxyResponse = ApiResponse<GalaxyResponseData>;
 
 export interface CreateGalaxyPayload {
   name: string;
@@ -49,15 +40,12 @@ export interface UpdateGalaxyPayload {
   view?: string;
 }
 
-export interface DeleteGalaxyResponse {
-  success: boolean;
-  message: string;
-}
-
+export type DeleteGalaxyResponse = ApiResponse<undefined>;
 
 export interface CreatePlanetPayload {
   name: string;
   color: string;
+  view?: string;
   id_galaxy: number | null;
 }
 
@@ -66,14 +54,16 @@ export interface UpdatePlanetPayload {
   color?: string;
   id_galaxy?: number;
   note?: string;
+  view?: string;
 }
 
-export interface PlanetResponse {
-  success: boolean;
-  data: Planet;
+export type PlanetResponse = ApiResponse<Planet>;
+
+export interface PlanetWithGalaxyData {
+  planet: Planet;
+  galaxy: Galaxy;
 }
 
-export interface DeletePlanetResponse {
-  success: boolean;
-  message: string;
-}
+export type PlanetWithGalaxyResponse = ApiResponse<PlanetWithGalaxyData>;
+
+export type DeletePlanetResponse = ApiResponse<undefined>;

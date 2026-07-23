@@ -54,17 +54,17 @@ api.interceptors.response.use(
       try {
         const response = await axios.post<AuthResponse>(
           `${import.meta.env.VITE_APP_BASE_URL}/auth/refresh`,
-          { refresh_token: refreshToken }
+          { refreshToken: refreshToken }
         );
 
         const tokens = response.data?.data;
 
-        if (tokens?.access_token && tokens?.refresh_token) {
-          localStorage.setItem('access_token', tokens.access_token);
-          localStorage.setItem('refresh_token', tokens.refresh_token);
+        if (tokens?.accessToken && tokens?.refreshToken) {
+          localStorage.setItem('access_token', tokens.accessToken);
+          localStorage.setItem('refresh_token', tokens.refreshToken);
 
           originalRequest.headers = originalRequest.headers ?? {};
-          originalRequest.headers.Authorization = `Bearer ${tokens.access_token}`;
+          originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
 
           return api(originalRequest);
         } else {

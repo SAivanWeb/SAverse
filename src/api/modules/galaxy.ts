@@ -1,6 +1,7 @@
 // src/api/modules/galaxy.ts
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import api from '../api';
+import { extractErrorMessage } from '@/api/utils';
 import type {
   GalaxyListResponse,
   GalaxyResponse,
@@ -10,13 +11,9 @@ import type {
   CreatePlanetPayload,
   UpdatePlanetPayload,
   PlanetResponse,
+  PlanetWithGalaxyResponse,
   DeletePlanetResponse
 } from '@/api/modules/types/galaxy';
-
-type ErrorResponse = {
-  success: boolean;
-  error?: string;
-};
 
 export default {
   /* ===== ГАЛАКТИКИ ===== */
@@ -27,8 +24,7 @@ export default {
       const { data }: AxiosResponse<GalaxyListResponse> = await api.get('/galaxies');
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -38,8 +34,7 @@ export default {
       const { data }: AxiosResponse<GalaxyResponse> = await api.get(`/galaxies/${id}`);
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -49,8 +44,7 @@ export default {
       const { data }: AxiosResponse<GalaxyResponse> = await api.post('/galaxies', payload);
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -66,8 +60,7 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -79,21 +72,19 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
   /* ===== ПЛАНЕТЫ ===== */
 
-  // получить планету по id
-  async fetchPlanetById(id: number): Promise<PlanetResponse> {
+  // получить планету вместе с галактикой
+  async fetchPlanetById(id: number): Promise<PlanetWithGalaxyResponse> {
     try {
-      const { data }: AxiosResponse<PlanetResponse> = await api.get(`/planets/${id}`);
+      const { data }: AxiosResponse<PlanetWithGalaxyResponse> = await api.get(`/planets/${id}`);
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -103,8 +94,7 @@ export default {
       const { data }: AxiosResponse<PlanetResponse> = await api.post('/planets', payload);
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -120,8 +110,7 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   },
 
@@ -133,8 +122,7 @@ export default {
       );
       return data;
     } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      throw error.response?.data?.error ?? error.message;
+      throw extractErrorMessage(err);
     }
   }
 };

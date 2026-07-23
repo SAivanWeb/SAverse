@@ -25,12 +25,12 @@ export const useUserStore = defineStore('useUserStore', () => {
 
     try {
       const response: AuthResponse = await api.user.register(payload);
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('access_token', response.data.accessToken);
+      localStorage.setItem('refresh_token', response.data.refreshToken);
       await initUser();
       return true;
     } catch (error) {
-      if (error === 'Email already taken') {
+      if (error === 'user already exists') {
         loadingStore.setMessage('error', 'Пользователь с таким Email уже существует');
       } else {
         loadingStore.setMessage('error', 'Непредвиденная ошибка регистрации')
@@ -46,12 +46,12 @@ export const useUserStore = defineStore('useUserStore', () => {
 
     try {
       const response: AuthResponse = await api.user.login(payload);
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('access_token', response.data.accessToken);
+      localStorage.setItem('refresh_token', response.data.refreshToken);
       await initUser();
       return true;
     } catch (error) {
-      if (error === 'Invalid credentials') {
+      if (error === 'invalid credentials') {
         loadingStore.setMessage('error', 'Неверный логин или пароль');
       } else {
         loadingStore.setMessage('error', 'Непредвиденная ошибка авторизации')

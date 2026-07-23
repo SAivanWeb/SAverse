@@ -1,19 +1,15 @@
-export interface AuthResponse {
-  success: boolean;
-  data: {
-    access_token: string;
-    refresh_token: string;
-  };
+import type { ApiResponse } from '@/api/modules/types/common';
+
+export interface TokensData {
+  accessToken: string;
+  refreshToken: string;
 }
+
+export type AuthResponse = ApiResponse<TokensData>;
 
 export interface AuthData {
   email: string;
   password: string;
 }
 
-export interface currentUserResponse {
-  success: boolean;
-  data: {
-    email: string;
-  };
-}
+export type currentUserResponse = ApiResponse<{ email: string }>;
