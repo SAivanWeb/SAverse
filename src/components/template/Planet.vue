@@ -195,16 +195,12 @@ const classes = computed(() => {
     color: #F5F5F5;
     transition: filter 0.3s, transform 0.3s;
     text-align: center;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 
     &_planet {
       max-width: 150px !important;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   }
 

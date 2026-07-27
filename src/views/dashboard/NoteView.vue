@@ -1,8 +1,11 @@
 <template>
-  <MainWrapper :backTo="planet ? `/galaxy/${planet.id_galaxy}` : undefined">
+  <MainWrapper>
     <div v-if="planet" class="note">
       <div class="note__header">
-        <MainTitle :title="planet?.name"/>
+        <div class="note__header-title">
+          <Back class="note__back" @click="goBack"/>
+          <MainTitle :title="planet?.name"/>
+        </div>
         <span class="note__autosave" :class="saveStatus">
           <template v-if="saveStatus === 'saving'">Сохранение...</template>
           <template v-else-if="saveStatus === 'saved'">Сохранено</template>
@@ -36,6 +39,7 @@ import MainTitle from "@/components/ui/title/MainTitle.vue";
 import {Planet, UpdatePlanetPayload} from "@/api/modules/types/galaxy";
 import galaxy from "@/api/modules/galaxy";
 import DeleteModal from "@/components/template/modals/DeleteModal.vue";
+import Back from "@/assets/icons/back.vue";
 
 const apiInstance: ApiInstance = api
 const loadingStore = useLoadingStore();
@@ -126,6 +130,10 @@ watch(content, () => {
   }
 });
 
+function goBack() {
+  if (planet.value) router.push(`/galaxy/${planet.value.id_galaxy}`);
+}
+
 async function deletePlanet() {
   if (!planet.value) return;
   loadingStore.startLoading()
@@ -155,6 +163,29 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+
+    &-title{
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-width: 0;
+      flex: 1;
+    }
+  }
+
+  .note__back{
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      filter:
+        drop-shadow(0 0 12px rgba(255, 255, 255, 0.55))
+        drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
+    }
   }
 
   &__buttons{

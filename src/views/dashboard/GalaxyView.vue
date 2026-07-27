@@ -1,7 +1,10 @@
 <template>
-  <MainWrapper backTo="/dashboard">
+  <MainWrapper>
     <div v-if="system" class="galaxy__header">
-      <MainTitle :title="system.name" />
+      <div class="galaxy__header-title">
+        <Back class="galaxy__header-back" @click="goBack"/>
+        <MainTitle :title="system.name" />
+      </div>
       <div class="galaxy__header-btns">
         <Add v-if="system.planets.length < 5" class="galaxy__header-icon" @click="emit('show-planet')"/>
         <Edit class="galaxy__header-icon" @click="editGalaxy"/>
@@ -18,13 +21,14 @@
 import MainWrapper from "@/components/template/MainWrapper.vue";
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import { computed, onMounted } from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import StarSystem from "@/components/template/StarSystem.vue";
 import MainButton from "@/components/ui/button/MainButton.vue";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
 import {Galaxy} from "@/api/modules/types/galaxy";
 import Edit from "@/assets/icons/edit.vue";
 import Add from "@/assets/icons/add.vue";
+import Back from "@/assets/icons/back.vue";
 
 const emit = defineEmits<{
   (e: 'show-planet'): void;
@@ -33,6 +37,7 @@ const emit = defineEmits<{
 
 const store = useGalaxyStore();
 const route = useRoute();
+const router = useRouter();
 
 const system = computed(() => {
   return store.galaxy
@@ -56,6 +61,10 @@ const editGalaxy = () => {
     emit('show-galaxy', galaxy.value);
   }
 };
+
+function goBack() {
+  router.push('/dashboard');
+}
 onMounted(() => {
   const id: number = Number(route.params.id);
 
@@ -72,12 +81,36 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
 
     @media (max-width: 600px) {
       margin-bottom: 1rem;
     }
 
+    &-title{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    &-back{
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      color: #fff;
+      cursor: pointer;
+
+      &:hover {
+        filter:
+          drop-shadow(0 0 12px rgba(255, 255, 255, 0.55))
+          drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
+      }
+    }
+
     &-btns{
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       gap: 2rem;
