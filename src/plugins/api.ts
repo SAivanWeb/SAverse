@@ -6,8 +6,6 @@ export const apiKey: InjectionKey<ApiInstance> = Symbol('api');
 export default {
   install(app: App) {
     app.config.globalProperties.$api = api;
-
-    // provide для setup-синтаксиса
     app.provide(apiKey, api);
   }
 };

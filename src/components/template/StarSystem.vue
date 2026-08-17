@@ -10,11 +10,9 @@
       @pointerleave="onPointerUp"
       @wheel.prevent="onWheel"
     >
-      <!-- stage = то, что реально двигаем/масштабируем -->
       <div class="system__stage" :style="stageStyle">
         <div class="system__center">
           <template v-if="planets.length">
-            <!-- орбиты -->
             <div
               v-for="(item, index) in planets"
               :key="item.id + '-orbit'"
@@ -22,7 +20,6 @@
               :style="{ '--radius': `${150 + index * 110}px` }"
             />
 
-            <!-- планеты -->
             <div
               v-for="(item, index) in planets"
               :key="item.id + '-wrapper'"
@@ -45,7 +42,6 @@
             </div>
           </template>
 
-          <!-- звезда -->
           <Planet
             class="system__star"
             :title="star.title"
@@ -89,7 +85,6 @@ const planets = computed(
 
 const randomDelays = computed(() => planets.value.map(() => -Math.random() * 30));
 
-/** PAN + ZOOM **/
 const viewportRef = ref<HTMLElement | null>(null);
 
 const x = ref(0);
@@ -248,7 +243,6 @@ function onWheel(e: WheelEvent) {
   }
 }
 
-/* "экран", который двигаем пальцами */
 .system__viewport {
   width: 100%;
   height: 100%;
@@ -257,14 +251,12 @@ function onWheel(e: WheelEvent) {
   touch-action: none;
 }
 
-/* то, что реально трансформируем */
 .system__stage {
   width: 100%;
   height: 100%;
   will-change: transform;
 }
 
-/* твой текущий центр системы */
 .system__center {
   position: relative;
   width: min(60vh, 60vw);
@@ -272,7 +264,6 @@ function onWheel(e: WheelEvent) {
   margin: 60px auto 0;
 }
 
-/* дальше — твои стили без изменений */
 .system__star {
   position: absolute;
   top: 50%;

@@ -7,9 +7,7 @@ interface Message {
 }
 
 export const useLoadingStore = defineStore('loadingStore', () => {
-  // глобальный флаг
   const loading = ref(false)
-  // счётчик параллельных запросов
   const pendingCount = ref(0)
   const message = ref<Message>({
     type: '',

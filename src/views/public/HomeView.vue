@@ -1,7 +1,6 @@
 <template>
   <MainWrapper>
     <section class="home">
-      <!-- HERO -->
       <div class="home__hero">
         <div class="home__hero-text">
           <h1 class="home__title">
@@ -27,7 +26,6 @@
         </div>
       </div>
 
-      <!-- КАК ЭТО РАБОТАЕТ -->
       <section id="how" class="home__section home__section--how">
         <h2 class="home__section-title">Как устроена твоя вселенная</h2>
 
@@ -56,7 +54,6 @@
         </div>
       </section>
 
-      <!-- ФИЧИ -->
       <section class="home__section home__section--features">
         <h2 class="home__section-title">Почему это удобно</h2>
         <div class="home__features-grid">
@@ -84,7 +81,6 @@
         </div>
       </section>
 
-      <!-- ФИНАЛЬНЫЙ CTA -->
       <section class="home__section home__section--cta">
         <h2 class="home__section-title">
           Готовы создать первую галактику?
@@ -190,7 +186,6 @@ const onPrimaryClick = () => {
     }
   }
 
-  /* Превью «системы» справа */
   &__hero-preview {
     position: relative;
     height: 290px;
@@ -269,7 +264,6 @@ const onPrimaryClick = () => {
     opacity: 0.8;
   }
 
-  /* Общие секции */
   &__section {
     display: flex;
     flex-direction: column;
@@ -286,7 +280,6 @@ const onPrimaryClick = () => {
     opacity: 0.8;
   }
 
-  /* Как это работает */
   &__steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -311,7 +304,6 @@ const onPrimaryClick = () => {
     line-height: 1.5;
   }
 
-  /* Фичи */
   &__features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -337,7 +329,6 @@ const onPrimaryClick = () => {
     line-height: 1.5;
   }
 
-  /* Финальный CTA */
   &__section--cta {
     align-items: flex-start;
     text-align: left;

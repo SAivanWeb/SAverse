@@ -71,17 +71,11 @@
               </mask>
             </defs>
 
-            <!-- ball (default) -->
             <circle v-if="!view || view === 'ball'" cx="50" cy="50" r="50" :fill="`url(#rg-${id})`"/>
-            <!-- 5-pointed star -->
             <polygon v-else-if="view === 'star'" points="50,2 61,37 98,37 68,57 79,93 50,71 21,93 32,57 2,37 39,37" :fill="`url(#rg-${id})`"/>
-            <!-- heart -->
             <path v-else-if="view === 'heart'" d="M50,80 C20,60 0,45 0,28 C0,12 12,2 26,2 C38,2 47,10 50,16 C53,10 62,2 74,2 C88,2 100,12 100,28 C100,45 80,60 50,80 Z" :fill="`url(#rg-${id})`"/>
-            <!-- crescent moon -->
             <circle v-else-if="view === 'moon'" cx="50" cy="50" r="48" :fill="`url(#rg-${id})`" :mask="`url(#moon-mask-${id})`"/>
-            <!-- lightning bolt -->
             <polygon v-else-if="view === 'lightning'" points="58,2 22,50 48,50 38,98 78,48 52,48" :fill="`url(#rg-${id})`"/>
-            <!-- fallback -->
             <circle v-else cx="50" cy="50" r="50" :fill="`url(#rg-${id})`"/>
           </svg>
         </div>
@@ -131,9 +125,6 @@ const lighter = (c: string, amt = 0.2) =>
 
 const darker = (c: string, amt = 0.2) =>
   tinycolor(c).darken(amt * 100).toHexString();
-
-const withAlpha = (c: string, alpha: number) =>
-  tinycolor(c).setAlpha(alpha).toRgbString();
 
 const toGalaxy = () => {
   router.push(`/galaxy/${props.id}`);

@@ -23,7 +23,6 @@ import MainTitle from "@/components/ui/title/MainTitle.vue";
 import { computed, onMounted } from "vue";
 import {useRoute, useRouter} from "vue-router";
 import StarSystem from "@/components/template/StarSystem.vue";
-import MainButton from "@/components/ui/button/MainButton.vue";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
 import {Galaxy} from "@/api/modules/types/galaxy";
 import Edit from "@/assets/icons/edit.vue";

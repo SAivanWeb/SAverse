@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import MainButton from "@/components/ui/button/MainButton.vue";
-import {computed, watch} from "vue";
+import {computed} from "vue";
 import {useUserStore} from "@/store/useUserStore";
 
 const store = useUserStore();

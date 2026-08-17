@@ -22,14 +22,11 @@ let stars: {
 }[] = [];
 let animationId: number;
 
-// Pre-allocated opacity buckets [0.2, 0.3, ..., 1.0] → 9 slots
 const buckets: { x: number; y: number; size: number }[][] = Array.from({ length: 9 }, () => []);
 
-// 🧭 Множители скорости
 let speedMultiplier = 1;
 let targetMultiplier = props.faster ? 50 : 1;
 
-// 🪄 Следим за изменением пропса
 watch(
   () => props.faster,
   (newVal) => {
@@ -50,15 +47,12 @@ function initStars(width: number, height: number) {
 function animate() {
   if (!ctx || !canvas.value) return;
 
-  // 🧮 Плавное приближение текущей скорости к целевой
   speedMultiplier += (targetMultiplier - speedMultiplier) * 0.05;
 
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 
-  // Clear pre-allocated buckets
   for (const b of buckets) b.length = 0;
 
-  // Update stars and group by quantized opacity (0.2–1.0 → 9 buckets)
   for (const s of stars) {
     s.x -= s.speed * speedMultiplier;
     if (s.x < 0) s.x = canvas.value.width;
@@ -67,7 +61,6 @@ function animate() {
     buckets[Math.round(s.opacity * 10) - 2].push({ x: s.x | 0, y: s.y | 0, size: s.size });
   }
 
-  // Draw each bucket with a single fillStyle change
   for (let i = 0; i < buckets.length; i++) {
     if (!buckets[i].length) continue;
     ctx.fillStyle = `rgba(255,255,255,${(i + 2) / 10})`;

@@ -21,8 +21,7 @@
 import MainWrapper from "@/components/template/MainWrapper.vue";
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import Planet from "@/components/template/Planet.vue";
-import {ref, computed, onMounted} from "vue";
-import MainButton from "@/components/ui/button/MainButton.vue";
+import {computed, onMounted} from "vue";
 import {useGalaxyStore} from "@/store/useGalaxyStore";
 import Add from "@/assets/icons/add.vue";
 

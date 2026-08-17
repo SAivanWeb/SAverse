@@ -18,12 +18,10 @@ const api: AxiosInstance = axios.create({
   }
 });
 
-// Request interceptor
 api.interceptors.request.use(
   (config: RetryableRequestConfig) => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      // убедимся, что headers существует
       config.headers = config.headers ?? {};
       config.headers.Authorization = `Bearer ${token}`;
     }

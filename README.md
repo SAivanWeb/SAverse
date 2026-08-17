@@ -1,38 +1,61 @@
-# saverse
+# SAverse
 
-This template should help get you started developing with Vue 3 in Vite.
+SAverse — визуальный конспект-менеджер: свои заметки пользователь организует не списком, а как вселенную. **Галактики** — это тематические разделы («Работа», «Учёба», «Идеи»), внутри каждой галактики — **планеты**, отдельные заметки с полноценным rich-text редактором. Все объекты отображаются на интерактивной звёздной карте с поддержкой pan/zoom (мышь, тачпад, тач-жесты).
 
-## Recommended IDE Setup
+Это фронтенд-часть проекта. Бэкенд — отдельный REST API на Go (описание контракта — в [API.md](./API.md)).
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Возможности
 
-## Recommended Browser Setup
+- Регистрация и вход по email/паролю, JWT-авторизация с автоматическим обновлением access-токена по refresh-токену
+- CRUD для галактик и планет
+- Rich-text редактор заметок (Quill) с автосохранением по debounce/throttle
+- Интерактивная звёздная карта: перетаскивание и зум колесом/пинчем
+- Кастомизация внешнего вида галактик/планет (цвет, форма — шар, звезда, сердце, луна, молния)
+- PWA: офлайн-кеш, установка на устройство, манифест и иконки
+- Адаптивная тёмная тема
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Стек
 
-## Customize configuration
+- **Vue 3** (Composition API, `<script setup>`) + **TypeScript**
+- **Vite** — сборка и dev-сервер
+- **Pinia** — состояние приложения (пользователь, галактики, глобальный лоадер)
+- **Vue Router** — маршрутизация с guard'ами на приватные роуты
+- **Axios** — HTTP-клиент с интерцептором обновления токена
+- **Naive UI** — часть UI-компонентов (color picker, уведомления)
+- **Vue Quill** — редактор текста заметок
+- **SCSS** — стили
+- **vite-plugin-pwa** — PWA-манифест и service worker
+- **tinycolor2** — работа с цветом для градиентов планет/звёзд
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Быстрый старт
 
-## Project Setup
-
-```sh
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
+cp .env.example .env   # укажите адрес вашего бэкенда в VITE_APP_BASE_URL
 npm run dev
 ```
 
-### Compile and Minify for Production
+Другие команды:
 
-```sh
-npm run build
+```bash
+npm run build     # продакшн-сборка в dist/
+npm run preview   # локальный просмотр собранной версии
 ```
+
+## Структура проекта
+
+```
+src/
+├── api/            # HTTP-клиент, модули запросов, типы ответов
+├── components/
+│   ├── template/   # компоненты страниц: шапка, модалки, звёздная система, фон
+│   └── ui/         # переиспользуемые UI-примитивы: кнопка, инпут, селект, пикер цвета
+├── plugins/        # Vue-плагин для внедрения api-клиента через provide/inject
+├── router/         # маршруты и guard'ы авторизации
+├── store/          # Pinia-сторы: пользователь, галактики, глобальный лоадер
+└── views/          # страницы (публичные и приватные)
+```
+
+## Аутентификация
+
+Access- и refresh-токены хранятся в `localStorage` и добавляются к запросам через axios-интерцептор. При ответе `401` фронтенд один раз пытается обновить токен через `/auth/refresh`; если это не удаётся — токены очищаются и пользователь перенаправляется на страницу входа.

@@ -5,15 +5,12 @@ import {useLoadingStore} from "@/store/useLoadingStore";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    // PUBLIC ROUTES
     {
       path: '/',
       name: 'Home',
       component: () => import('@/views/public/HomeView.vue'),
       meta: { requiresGuest: true }
     },
-
-    // PROTECTED ROUTES
     {
       path: '/dashboard',
       name: 'Dashboard',
@@ -32,8 +29,6 @@ const router = createRouter({
       component: () => import('@/views/dashboard/NoteView.vue'),
       meta: { requiresAuth: true }
     },
-
-    // FALLBACK
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'
@@ -42,8 +37,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // прячем текущий контент и запускаем прелоадер до того,
-  // как новая страница начнёт монтироваться и подгружать данные
   useLoadingStore().startLoading()
 
   const userStore = useUserStore()
@@ -68,8 +61,6 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach(() => {
-  // снимаем "флаг перехода"; итоговая видимая длительность прелоадера
-  // (минимум 2с) контролируется в App.vue
   useLoadingStore().stopLoading()
 })
 

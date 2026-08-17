@@ -37,7 +37,6 @@ import api from '@/api'
 import type { ApiInstance } from '@/api'
 import MainTitle from "@/components/ui/title/MainTitle.vue";
 import {Planet, UpdatePlanetPayload} from "@/api/modules/types/galaxy";
-import galaxy from "@/api/modules/galaxy";
 import DeleteModal from "@/components/template/modals/DeleteModal.vue";
 import Back from "@/assets/icons/back.vue";
 
@@ -265,16 +264,12 @@ onMounted(() => {
 }
 
 .ql-container .ql-editor {
-  /* базовый размер текста: адаптивный */
   font-size: clamp(14px, 1.1vw, 16px);
   line-height: 1.6;
   color: #fff;
-
-  /* чтобы длинные слова не ломали верстку */
   word-break: break-word;
 }
 
-/* Заголовки */
 .ql-container .ql-editor h1 {
   font-size: clamp(24px, 3vw, 36px);
   line-height: 1.15;
@@ -296,19 +291,16 @@ onMounted(() => {
   font-weight: 600;
 }
 
-/* Обычный текст */
 .ql-container .ql-editor p,
 .ql-container .ql-editor li {
   margin: 0 0 0.6em;
 }
 
-/* Списки */
 .ql-container .ql-editor ul,
 .ql-container .ql-editor ol {
   padding-left: 1.25em;
 }
 
-/* Чек-листы */
 .ql-container .ql-editor ul[data-checked] > li::before {
   content: '';
   display: inline-block;
@@ -337,7 +329,6 @@ onMounted(() => {
   text-decoration: line-through;
 }
 
-/* Цитата/код (если используешь) */
 .ql-container .ql-editor blockquote {
   border-left: 3px solid rgba(255, 255, 255, 0.35);
   padding-left: 12px;

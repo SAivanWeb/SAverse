@@ -1,4 +1,3 @@
-// src/api/modules/galaxy.ts
 import type { AxiosResponse } from 'axios';
 import api from '../api';
 import { extractErrorMessage } from '@/api/utils';
@@ -16,9 +15,6 @@ import type {
 } from '@/api/modules/types/galaxy';
 
 export default {
-  /* ===== ГАЛАКТИКИ ===== */
-
-  // список галактик текущего пользователя
   async fetchGalaxies(): Promise<GalaxyListResponse> {
     try {
       const { data }: AxiosResponse<GalaxyListResponse> = await api.get('/galaxies');
@@ -28,7 +24,6 @@ export default {
     }
   },
 
-  // одна галактика
   async fetchGalaxyById(id: number): Promise<GalaxyResponse> {
     try {
       const { data }: AxiosResponse<GalaxyResponse> = await api.get(`/galaxies/${id}`);
@@ -38,7 +33,6 @@ export default {
     }
   },
 
-  // создать галактику
   async createGalaxy(payload: CreateGalaxyPayload): Promise<GalaxyResponse> {
     try {
       const { data }: AxiosResponse<GalaxyResponse> = await api.post('/galaxies', payload);
@@ -48,7 +42,6 @@ export default {
     }
   },
 
-  // обновить галактику
   async updateGalaxy(
     id: number,
     payload: UpdateGalaxyPayload
@@ -64,7 +57,6 @@ export default {
     }
   },
 
-  // удалить галактику
   async deleteGalaxy(id: number): Promise<DeleteGalaxyResponse> {
     try {
       const { data }: AxiosResponse<DeleteGalaxyResponse> = await api.delete(
@@ -76,9 +68,6 @@ export default {
     }
   },
 
-  /* ===== ПЛАНЕТЫ ===== */
-
-  // получить планету вместе с галактикой
   async fetchPlanetById(id: number): Promise<PlanetWithGalaxyResponse> {
     try {
       const { data }: AxiosResponse<PlanetWithGalaxyResponse> = await api.get(`/planets/${id}`);
@@ -88,7 +77,6 @@ export default {
     }
   },
 
-  // создать планету
   async createPlanet(payload: CreatePlanetPayload): Promise<PlanetResponse> {
     try {
       const { data }: AxiosResponse<PlanetResponse> = await api.post('/planets', payload);
@@ -98,7 +86,6 @@ export default {
     }
   },
 
-  // обновить планету
   async updatePlanet(
     id: number,
     payload: UpdatePlanetPayload
@@ -114,7 +101,6 @@ export default {
     }
   },
 
-  // удалить планету
   async deletePlanet(id: number): Promise<DeletePlanetResponse> {
     try {
       const { data }: AxiosResponse<DeletePlanetResponse> = await api.delete(
